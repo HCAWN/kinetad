@@ -1,0 +1,159 @@
+.error { color: red; }
+body {
+	width: 100%;
+	font-family: 'Cormorant SC', serif;
+	margin: 0;
+  	-webkit-touch-callout: none; /* iOS Safari */
+    	-webkit-user-select: none; /* Safari */
+     	-khtml-user-select: none; /* Konqueror HTML */
+       	-moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+    cursor: default;
+}
+#main {
+	width: 90%;
+	left: 50%;
+	top: 100px;
+	max-width: 500px;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+    position: absolute;
+}
+#header {
+	position: fixed;
+	width: 90%;
+	left: 50%;
+	max-width: 500px;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+	background-image: url(/graphics/ep_naturalwhite.png);
+    background-position: center center;
+    background-repeat: repeat;
+    background-size: 400px;
+	z-index: 10;
+}
+form {
+	height: 30px;
+	margin-top: 10px;
+}
+.entrybox {
+	position: relative;
+	width: 98%;
+	border-width: 1px;
+	left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+.submitbox {
+	position: relative;
+	left: 50%;
+	margin-top: 5px;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+    cursor: pointer;
+}
+#entry {
+	margin-bottom: -30px;
+}
+h1 {
+	text-align: center;
+	cursor: pointer;
+}
+h3 {
+	margin: 0;
+	font-weight: 100;
+}
+#time {
+	position: relative;
+}
+#number {
+	position: relative;
+	text-align: right;
+	top: -19px;
+	font-weight: bold;
+	font-size: 0.7em;
+}	
+p	{
+	left: 65px;
+	position: relative;
+	top: -33px;
+	width: 70%;
+	margin: 0;
+	font-family: 'Lora', serif;
+	text-align: justify;
+}
+.stealth {
+	color: transparent;
+   	text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+#background {
+	background-image: url(/graphics/ep_naturalwhite.png);
+    background-position: center center;
+    background-repeat: repeat;
+    background-size: 400px;
+	position: fixed;
+	width: 100%;
+	height: 130%;
+	top: 0;
+	left: 0;
+	z-index:-100;
+}
+#pixabay{
+    min-height: 100%;
+    min-width: 100%;
+    height: 59vw;
+	position: fixed;
+	left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+	top:0;
+	z-index: -100;
+	background-repeat: no-repeat;
+}
+.topbutton {
+	width: 30%;
+	position: absolute;
+	top: 60px;
+	cursor: pointer;
+	color: inherit;
+	text-decoration: none;
+}
+.previousd {
+	left: 0;
+}
+.nextd {
+	right: 0;
+	text-align: right;
+}
+.logout {
+	left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+    text-align: center;
+}
+#wordcount {
+	position: fixed;
+	right: 0;
+	top: 40px;
+	text-align: right;
+}
