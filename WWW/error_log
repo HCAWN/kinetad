@@ -1,2 +1,0 @@
-[04-Jun-2017 00:24:45 UTC] PHP Warning:  mysqli::mysqli(): (HY000/2005): Unknown MySQL server host 'localhost:3306' (2) in /home/henryneilson/public_html/kinetad.com/includes/db_connect.php on line 22
-[04-Jun-2017 00:25:26 UTC] PHP Warning:  mysqli::mysqli(): (HY000/2005): Unknown MySQL server host 'localhost:3306' (2) in /home/henryneilson/public_html/kinetad.com/includes/db_connect.php on line 22

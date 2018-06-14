@@ -29,6 +29,7 @@ body {
 	width: 90%;
 	left: 50%;
 	max-width: 500px;
+	padding-bottom: 20px;
     -webkit-transform: translateX(-50%);
     -moz-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
@@ -43,6 +44,7 @@ body {
 form {
 	height: 30px;
 	margin-top: 10px;
+	cursor: default;
 }
 .entrybox {
 	position: relative;
@@ -54,6 +56,7 @@ form {
     -ms-transform: translateX(-50%);
     -o-transform: translateX(-50%);
     transform: translateX(-50%);
+	cursor: auto;
 }
 .submitbox {
 	position: relative;
@@ -70,8 +73,10 @@ form {
 	margin-bottom: -30px;
 }
 h1 {
+	-webkit-margin-before: 0.3em;
 	text-align: center;
 	cursor: pointer;
+	font-weight: 700;
 }
 h3 {
 	margin: 0;
@@ -95,6 +100,21 @@ p	{
 	margin: 0;
 	font-family: 'Lora', serif;
 	text-align: justify;
+	/* These are technically the same, but use both */
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+
+	-ms-word-break: break-all;
+	/* This is the dangerous one in WebKit, as it breaks things wherever */
+	word-break: break-all;
+	/* Instead use this non-standard one: */
+	word-break: break-word;
+
+	/* Adds a hyphen where the word breaks, if supported (No Blink) */
+	-ms-hyphens: auto;
+	-moz-hyphens: auto;
+	-webkit-hyphens: auto;
+	hyphens: auto;
 }
 .stealth {
 	color: transparent;
@@ -156,4 +176,11 @@ p	{
 	right: 0;
 	top: 40px;
 	text-align: right;
+}
+input {
+     background:none!important;
+     color:inherit;
+     border:none; 
+     padding:0!important;
+     font: inherit;
 }
