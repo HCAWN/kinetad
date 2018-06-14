@@ -116,10 +116,6 @@ p	{
 	-webkit-hyphens: auto;
 	hyphens: auto;
 }
-.stealth {
-	color: transparent;
-   	text-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
 #background {
 	background-image: url(/graphics/ep_naturalwhite.png);
     background-position: center center;
