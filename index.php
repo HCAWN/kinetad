@@ -192,7 +192,7 @@ sec_session_start();
 			?> 
 			<img id="pixabay" src="graphics/background.jpg">
 			<form action="includes/process_login.php" method="post" name="login_form">          
-				<input type="text" placeholder="Email" name="email" class="textinp"/>
+				<input type="text" placeholder="Username" name="username" class="textinp"/>
 				<input type="password" placeholder="Password" name="password" id="password" class="textinp"/>
 				<input type="button" value="Login" id="submt" class="buttonclk" onclick="formhash(this.form, this.form.password);" /> 
 			</form>
