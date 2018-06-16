@@ -156,6 +156,7 @@ sec_session_start();
 				}, 30000);
 			});
 		</script>
+		<a style="position: fixed; bottom: 0; right: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/export">Export</a>
 		<?php
 		};
 		else :
