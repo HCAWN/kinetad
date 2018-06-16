@@ -45,7 +45,7 @@ sec_session_start();
 			exit;
 		};
 		//Import diary entries
-		$sql = "SELECT * FROM Entryn ORDER BY number DESC" ; 
+		$sql = "SELECT * FROM ".strtolower($_SESSION['username'])." ORDER BY number DESC" ; 
 		$query = mysqli_query($mysqli, $sql);
 		if (!$query) {
 			die ('SQL Error: ' . mysqli_error($mysqli));
@@ -120,7 +120,7 @@ sec_session_start();
 			$iv = openssl_random_pseudo_bytes($ivlen);
 			$entry = openssl_encrypt($plaintext, $cipher, $key, $options=0, $iv, $tag);
 			//////////////////AES-256-GCM encryption//////////////////
-			$sql = "INSERT INTO Entryn (datee,entry,IV,tag) VALUES ('".$datee."','".$entry."','".bin2hex($iv)."','".bin2hex($tag)."');" ;
+			$sql = "INSERT INTO ".strtolower($_SESSION['username'])." (datee,entry,IV,tag) VALUES ('".$datee."','".$entry."','".bin2hex($iv)."','".bin2hex($tag)."');" ;
 			if ( ! $query = mysqli_query($mysqli, $sql) ) {
 				echo mysqli_error($connection);
 				die;
