@@ -2,7 +2,6 @@
 include_once 'db_connect.php';
 include_once 'psl-config.php';
 $error_msg = "";
-print_r($_POST);
 if (isset($_POST['username'], $_POST['p'])) {
 	// Sanitize and validate the data passed in
 	$username = strtolower(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING));
