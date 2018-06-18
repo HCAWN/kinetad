@@ -29,6 +29,3 @@ header('Content-Disposition: attachment; filename="'.$_SESSION['username'].'_Jou
 // make php send the generated csv lines to the browser
 fpassthru($f);
 ?>
-<script language="JavaScript">
-window.close();
-</script>
