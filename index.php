@@ -122,7 +122,7 @@ sec_session_start();
 			//////////////////AES-256-GCM encryption//////////////////
 			$sql = "INSERT INTO ".strtolower($_SESSION['username'])." (datee,entry,IV,tag) VALUES ('".$datee."','".$entry."','".bin2hex($iv)."','".bin2hex($tag)."');" ;
 			if ( ! $query = mysqli_query($mysqli, $sql) ) {
-				echo mysqli_error($connection);
+				echo mysqli_error($mysqli);
 				die;
 			};
 			header('Location: https://'.$_SERVER['SERVER_NAME']);
@@ -156,6 +156,7 @@ sec_session_start();
 				}, 30000);
 			});
 		</script>
+		<a style="position: fixed; bottom: 0; left: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/import">Import</a>
 		<a style="position: fixed; bottom: 0; right: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/export">Export</a>
 		<?php
 		};
