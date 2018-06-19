@@ -36,12 +36,12 @@ sec_session_start();
 		//Set locked status
 		if (!isset($_SESSION['lockstatus'])) {
 			$_SESSION['lockstatus'] = ucfirst($_SESSION['username']).'\'s Diary';
-			header('Location: https://'.$_SERVER['SERVER_NAME']);
+			header('Location: '.$_SERVER['REQUEST_URI']);
 			exit;
 		};
 		if (isset($_POST['lockstatus'])) {
 			$_SESSION['lockstatus'] = $_POST['lockstatus'];
-			header('Location: https://'.$_SERVER['SERVER_NAME']);
+			header('Location: '.$_SERVER['REQUEST_URI']);
 			exit;
 		};
 		//Import diary entries
@@ -65,7 +65,7 @@ sec_session_start();
 		<div id=main>
 			<a name="#a"></a>
 			<form class="form" action="" method="post" enctype="multipart/form-data" autocomplete="off">
-				<input type="text" placeholder="Thought" name="entry" class="entrybox" autofocus="autofocus" required />
+				<input <?php if(isset($_GET["entry"])) {echo 'value="'.trim($_GET["entry"]).'"';};?> type="text" placeholder="Thought" name="entry" class="entrybox" autofocus="autofocus" required />
 				<input type="submit" value="Add" name="Done" class="submitbox" />
 			</form>
 			<h2>Today</h2>
@@ -147,11 +147,14 @@ sec_session_start();
 		if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Diary (Locked)') {
 		?>
 		<script type="text/javascript">
+			//Function to switch to secure mode after 30 seconds of inactive mouse movment
 			var timeout = null;
 			$(document).on('mousemove', function() {
 				clearTimeout(timeout);
 				timeout = setTimeout(function() {
-					console.log('30 sec idle, locking');
+					//parse current text entered to the URL to stop it being lost and annoying user.
+					var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?entry=' + $('.entrybox').val();
+					window.history.pushState({path:newurl},'',newurl);
 					$('#title').trigger("click")
 				}, 30000);
 			});
