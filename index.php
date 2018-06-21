@@ -183,7 +183,7 @@ sec_session_start();
 				<meta name="application-name" content="Neilson Engineering">
 				<meta name="msapplication-config" content="https://neilsonengineering.com/favicons/browserconfig.xml?v=BGBR3AKGdq">
 				<meta name="theme-color" content="#ffffff">
-				<title>Log In</title>
+				<title>Kinetad - Login</title>
 				<link rel="stylesheet" href="styles/base.css" />
 				<script type="text/JavaScript" src="js/sha512.js"></script> 
 				<script type="text/JavaScript" src="js/forms.js"></script> 
