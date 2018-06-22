@@ -71,3 +71,63 @@ function regformhash(form, uid, password, conf) {
     form.submit();
     return true;
 }
+
+function changeformhash(form, oldpassword, newpassword, newconfirmpwd) {
+    // Check each field has a value
+    if (oldpassword.value == '' || newpassword.value == '' || newconfirmpwd.value == '') {
+        alert('You must provide all the requested details. Please try again');
+        return false;
+    }
+       
+    // Check that the password is sufficiently long (min 6 chars)
+    // The check is duplicated below, but this is included to give more
+    // specific guidance to the user
+    if (newpassword.value.length < 6) {
+        alert('Passwords must be at least 6 characters long.  Please try again');
+        form.newpassword.focus();
+        return false;
+    }
+    
+    // At least one number, one lowercase and one uppercase letter 
+    // At least six characters 
+    var re = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/; 
+    if (!re.test(newpassword.value)) {
+        alert('Passwords must contain at least one number, one lowercase and one uppercase letter.  Please try again');
+        return false;
+    }
+    
+    // Check password and confirmation are the same
+    if (newpassword.value != newconfirmpwd.value) {
+        alert('Your password and confirmation do not match. Please try again');
+        form.newpassword.focus();
+        return false;
+    }
+        
+    // Create a new element input, this will be our hashed password field. 
+    var p = document.createElement("input");
+
+    // Add the new element to our form. 
+    form.appendChild(p);
+    p.name = "pold";
+    p.type = "hidden";
+    p.value = hex_sha512(oldpassword.value);
+
+    // Create a new element input, this will be our hashed password field. 
+    var pn = document.createElement("input");
+
+    // Add the new element to our form. 
+    form.appendChild(pn);
+    pn.name = "pnew";
+    pn.type = "hidden";
+    pn.value = hex_sha512(newpassword.value);
+
+    // Make sure the plaintext password doesn't get sent. 
+    oldpassword.value = "";
+    newpassword.value = "";
+    newconfirmpwd.value = "";
+
+    // Finally submit the form. 
+    form.submit();
+    return true;
+
+}
