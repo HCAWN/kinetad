@@ -58,10 +58,7 @@ if (isset($_POST['username'], $_POST['p'])) {
 		while(mysqli_more_results($mysqli)) {
 			mysqli_next_result($mysqli);
 		};
-		//header('Location: ./register_success.php');
+		header('Location: https://'.$_SERVER['SERVER_NAME']);
 		exit();
-	}
-	else {
-		echo $error_msg;
-	}
+	};
 }

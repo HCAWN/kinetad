@@ -32,7 +32,7 @@ if (login_check($mysqli) == true) :
 	<body>
 		<img id="pixabay" src="graphics/background.jpg">
 		<form action="" method="post" name="login_form">
-			<h1>Change <?php echo $_SESSION['username'];?>'s Password</h1>
+			<h2 style="text-align: center;" >Change <?php echo $_SESSION['username'];?>'s Password</h2>
 			<input type="text" placeholder="Old Password" name="oldpassword" class="textinp"/>
 			<input type="password" placeholder="New Password" name="newpassword"  class="textinp"/>
 			<input type="password" placeholder="Confirm New Password" name="newconfirmpwd" class="textinp"/>
@@ -44,7 +44,7 @@ if (login_check($mysqli) == true) :
 <?php
 	if (isset($_POST['pold'], $_POST['pnew'])) {
 		$username = $_SESSION['username'];
-		$oldpassword = $_POST['pold']; // The hashed password.
+		$oldpassword = $_POST['pold'];
 		$password = $_POST['pnew'];
 		if (login($username, $oldpassword, $mysqli) == true) {
 			//////////////////CHANGE PASSWORD//////////////////
@@ -94,6 +94,7 @@ if (login_check($mysqli) == true) :
 				mysqli_next_result($mysqli);
 			};
 			header('Location: https://'.$_SERVER['SERVER_NAME']);
+			exit();
 			//////////////////RE-ENCRYPT ENTRIES//////////////////
 		}
 		else {

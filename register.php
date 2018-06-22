@@ -5,9 +5,6 @@ include_once 'includes/functions.php';
 <!DOCTYPE html>
 <html>
 	<head>
-		<!--[if IE]>
-			<script>alert("You are using an outdated browser that does not support the formatting used on this website. Please consider upgrading your browser to improve your web experience.");</script>
-		<![endif]-->
 		<meta content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" name="viewport" />
 		<meta content="yes" name="apple-mobile-web-app-capable" />
 
@@ -28,17 +25,14 @@ include_once 'includes/functions.php';
 		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 	</head>
 	<body>
-		<!-- Registration form to be output if the POST variables are not
-		set or if the registration script caused an error. -->
-		<h1>Create your login information:</h1>
 		<?php
 		if (!empty($error_msg)) {
 			echo $error_msg;
 		}
 		?>
 		<img id="pixabay" src="graphics/background.jpg">
-		<form method="post" name="registration_form" action="">
-			<input type='text'placeholder="Username" name='username' id='username' class="textinp" />
+		<form method="post" name="registration_form" autocomplete="off" action="">
+			<input type='text' placeholder='Username' name='username' id='username' class="textinp" />
 			<input type="password" placeholder="password" name="password" id="password" class="textinp" />
 			<input type="password" placeholder="Confirm password" name="confirmpwd" id="confirmpwd" class="textinp" />
 			<input type="button" value="Register" class="buttonclk" onclick="return regformhash(this.form, this.form.username, this.form.password, this.form.confirmpwd);" /> 
