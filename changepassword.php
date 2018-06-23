@@ -98,7 +98,7 @@ if (login_check($mysqli) == true) :
 			//////////////////RE-ENCRYPT ENTRIES//////////////////
 		}
 		else {
-			header('Location: ../error.php?err=Incorrect current password');
+			header('Location: ../error.php?err=Could not change password: Incorrect current password');
 			exit();
 		};
 	};

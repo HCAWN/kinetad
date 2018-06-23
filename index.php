@@ -12,7 +12,7 @@ sec_session_start();
 		<![endif]-->
 		<meta content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" name="viewport" />
 		<meta content="yes" name="apple-mobile-web-app-capable" />
-		<title><?php echo ucfirst($_SESSION['username']); ?>'s Diary</title>
+		<title><?php echo ucfirst($_SESSION['username']); ?>'s Journal</title>
 
 		<link rel="apple-touch-icon" sizes="180x180" href="https://neilsonengineering.com/favicons/apple-touch-icon.png?v=BGBR3AKGdq">
 		<link rel="icon" type="image/png" href="https://neilsonengineering.com/favicons/favicon-32x32.png?v=BGBR3AKGdq" sizes="32x32">
@@ -35,7 +35,7 @@ sec_session_start();
 		<?php
 		//Set locked status
 		if (!isset($_SESSION['lockstatus'])) {
-			$_SESSION['lockstatus'] = ucfirst($_SESSION['username']).'\'s Diary';
+			$_SESSION['lockstatus'] = ucfirst($_SESSION['username']).'\'s Journal';
 			header('Location: '.$_SERVER['REQUEST_URI']);
 			exit;
 		};
@@ -44,7 +44,7 @@ sec_session_start();
 			header('Location: '.$_SERVER['REQUEST_URI']);
 			exit;
 		};
-		//Import diary entries
+		//Import Journal entries
 		$sql = "SELECT * FROM ".strtolower($_SESSION['username'])." ORDER BY number DESC" ; 
 		$query = mysqli_query($mysqli, $sql);
 		if (!$query) {
@@ -55,7 +55,7 @@ sec_session_start();
 		<div id="header">
 			<h1>
 				<form action="" name="lockstatus" method="post">
-					<input style="text-decoration: none;" type="submit" class="button" id="title" name="lockstatus" value="<?php echo ucfirst($_SESSION['username']); ?>'s Diary<?php if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Diary') { echo ' (Locked)';}; ?>" />
+					<input style="text-decoration: none;" type="submit" class="button" id="title" name="lockstatus" value="<?php echo ucfirst($_SESSION['username']); ?>'s Journal<?php if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal') { echo ' (Locked)';}; ?>" />
 				</form>
 			</h1>
 			<div class="previousd topbutton">Previous Day</div>
@@ -92,7 +92,7 @@ sec_session_start();
 					<h3 id="number"><?php echo $row['number']; ?></h3>
 					<p>
 						<?php
-						if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Diary (Locked)') {
+						if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
 							$toecho = openssl_decrypt($row['entry'], "aes-256-gcm", $_SESSION['encryptstring'], $options=0, hex2bin($row['IV']), hex2bin($row['tag']));
 						}
 						else {
@@ -144,7 +144,7 @@ sec_session_start();
 			});
 		</script>
 		<?php
-		if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Diary (Locked)') {
+		if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
 		?>
 		<script type="text/javascript">
 			//Function to switch to secure mode after 30 seconds of inactive mouse movment
@@ -196,7 +196,8 @@ sec_session_start();
 			};
 			?> 
 			<img id="pixabay" src="graphics/background.jpg">
-			<form action="includes/process_login.php" method="post" name="login_form">          
+			<form action="includes/process_login.php" method="post" name="login_form">
+				<h2 style="text-align: center;" >Login</h2>        
 				<input type="text" placeholder="Username" name="username" class="textinp"/>
 				<input type="password" placeholder="Password" name="password" id="password" class="textinp"/>
 				<input type="button" value="Login" id="submt" class="buttonclk" onclick="formhash(this.form, this.form.password);" /> 

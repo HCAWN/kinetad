@@ -32,6 +32,7 @@ include_once 'includes/functions.php';
 		?>
 		<img id="pixabay" src="graphics/background.jpg">
 		<form method="post" name="registration_form" autocomplete="off" action="">
+			<h2 style="text-align: center;" >Create an account</h2>
 			<input type='text' placeholder='Username' name='username' id='username' class="textinp" />
 			<input type="password" placeholder="password" name="password" id="password" class="textinp" />
 			<input type="password" placeholder="Confirm password" name="confirmpwd" id="confirmpwd" class="textinp" />
