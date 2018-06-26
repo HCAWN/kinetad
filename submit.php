@@ -116,34 +116,53 @@ function decrypt(encrypted,rawkey) {
 	var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes);
 	return decryptedText;
 };
+function submitentry(form,plaintext,rawkey) {
+	var e = document.createElement("input");
+	form.appendChild(e);
+	e.name = "e";
+	e.type = "hidden";
+	e.value = encrypt(plaintext.value,rawkey.value);
+	rawkey.value = "";
+	plaintext.value = "";
+	form.submit();
+}
 </script>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<textarea id="plaintext" placeholder="text to encrypt" rows=30 cols=60 style="text-align: center"></textarea>
-<textarea id="encryptcipher" placeholder="Encryption cipher" rows=5></textarea>
-<p id="encrypted" ></p>
 
-
-
-
+<form class="form" action="" method="POST" enctype="multipart/form-data" autocomplete="off">
+	<input id="entrycipher" type="password" placeholder="Cipher" name="entrycipher" class="entrybox" required />
+	<input id="entry" type="text" placeholder="Thought" name="entry" class="entrybox" autofocus="autofocus" required />
+	<input type="button" value="Add" name="Done" class="submitbox" onclick="submitentry(this.form, this.form.entry, this.form.entrycipher);" />
+</form>
+<?php print_r($_POST); ?>
 
 
 
 
 <textarea id="decryptcipher" placeholder="Decryption cipher" rows=5></textarea>
-<p id="decrypted" ></p>
+<br>
+<p class="encrypted" style="display: none;">e3412a224a6fb3981a8664</p>
+<p class="decrypted" >e3412a224a6fb3981a8664</p>
+<br>
+<p class="encrypted" style="display: none;">fc4c273a0526b7d70485761d</p>
+<p class="decrypted" >fc4c273a0526b7d70485761d</p>
 
 
 
 
 
 <script>
-$("#encryptcipher").keyup(function(){
-  $("#encrypted").text(encrypt($("#plaintext").val(),$("#encryptcipher").val()))
-});
-
-$("#decryptcipher").keyup(function(){
-  $("#decrypted").text(decrypt($("#encrypted").text(),$("#decryptcipher").val()))
-});
+	$("#decryptcipher").keyup(function(){
+		if ($("#decryptcipher").val().length > 0) {
+			$(".decrypted").each(function(){
+				$(this).text(decrypt($(this).prev().text(),$("#decryptcipher").val()))
+			});
+		}
+		else {
+			$(".decrypted").each(function(){
+				$(this).text($(this).prev().text())
+			});
+		};
+	});
 </script>
 
