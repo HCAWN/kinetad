@@ -27,6 +27,8 @@ sec_session_start();
 
 		<link href="styles/main.css" rel="stylesheet" type="text/css" />
 		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+		<script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
+		<script type="text/JavaScript" src="js/clientEncrypt.js"></script> 
 		<link href="https://fonts.googleapis.com/css?family=Cormorant+SC" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
 		<meta charset="UTF-8">
@@ -65,8 +67,11 @@ sec_session_start();
 		<div id=main>
 			<a name="#a"></a>
 			<form class="form" action="" method="post" enctype="multipart/form-data" autocomplete="off">
-				<input <?php if(isset($_GET["entry"])) {echo 'value="'.trim($_GET["entry"]).'"';};?> type="text" placeholder="Thought" name="entry" class="entrybox" autofocus="autofocus" required />
-				<input type="submit" value="Add" name="Done" class="submitbox" />
+				<!--input  type="text" placeholder="Thought" name="entry" class="entrybox" autofocus="autofocus" required />
+				<input type="submit" value="Add" name="Done" class="submitbox" /--->
+				<input id="entrycipher" type="password" placeholder="Cipher" name="entrycipher" class="entrybox" required />
+				<input id="entry" type="text" placeholder="Thought" name="entry" class="entrybox" autofocus="autofocus" required />
+				<input type="button" value="Add" name="Done" class="submitbox" onclick="submitentry(this.form, this.form.entry, this.form.entrycipher);" />
 			</form>
 			<h2>Today</h2>
 			<?php
@@ -90,7 +95,6 @@ sec_session_start();
 					?>
 					<h3 id="time"><?php echo date('H:i:s', $entry_date);?></h3>
 					<h3 id="number"><?php echo $row['number']; ?></h3>
-					<p>
 						<?php
 						if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
 							$toecho = openssl_decrypt($row['entry'], "aes-256-gcm", $_SESSION['encryptstring'], $options=0, hex2bin($row['IV']), hex2bin($row['tag']));
@@ -98,10 +102,10 @@ sec_session_start();
 						else {
 							$toecho = $row['entry'];
 						};
-						echo $toecho;
+						echo '<p class="encrypted" style="display: none;">'.$toecho.'</p>';
 						$word_count += str_word_count($toecho);
 						?>
-					</p>
+					<?php echo '<p class="decrypted" >'.$toecho.'</p>'; ?>
 				</div>
 			<?php
 			endwhile
@@ -109,10 +113,10 @@ sec_session_start();
 			<h2 id="wordcount">Total words: <?php echo number_format($word_count); ?></h2>
 		</div>
 		<?php
-		if (isset($_POST['entry'])) {
+		if (isset($_POST['e'])) {
 			$datee = date('Y-m-d H:i:s');
 			//////////////////AES-256-GCM encryption//////////////////
-			$plaintext = $_POST['entry'];
+			$plaintext = $_POST['e'];
 			$cipher = "aes-256-gcm";
 			$key = $_SESSION['encryptstring'];
 			$tag = '10001';
@@ -130,6 +134,25 @@ sec_session_start();
 		};
 		?>
 		<script type="text/javascript">
+			//ON THE FLY DECRYPTION//
+			$("#entrycipher").keyup(function(){
+				if ($("#entrycipher").val().length > 0) {
+					$(".decrypted").each(function(){
+						$(this).text(decrypt($(this).prev().text(),$("#entrycipher").val()))
+					});
+				}
+				else {
+					$(".decrypted").each(function(){
+						$(this).text($(this).prev().text())
+					});
+				};
+			});
+			if (readCookie('cipher')) {
+				$("#entrycipher").val(readCookie('cipher'));
+				$("#entrycipher").val(readCookie('cipher'));
+				$('#entrycipher').keyup();
+			};
+			//PREVIOUS AND NEXT DAYS//
 			var index = -1;
 			$('.previousd').click(function() {
 			   index++;
@@ -146,7 +169,7 @@ sec_session_start();
 		<?php
 		if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
 		?>
-		<script type="text/javascript">
+		<!--script type="text/javascript">
 			//Function to switch to secure mode after 30 seconds of inactive mouse movment
 			var timeout = null;
 			$(document).on('mousemove', function() {
@@ -158,7 +181,7 @@ sec_session_start();
 					$('#title').trigger("click")
 				}, 30000);
 			});
-		</script>
+		</script-->
 		<a style="position: fixed; bottom: 0; left: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/changepassword">Change Password</a>
 		<a style="position: fixed; bottom: 0; right: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/export">Export</a>
 		<?php

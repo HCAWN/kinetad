@@ -1,5 +1,3 @@
-<script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
-<script>
 var sha256 = function sha256(ascii) {
 	function rightRotate(value, amount) {
 		return (value>>>amount) | (value<<(32 - amount));
@@ -117,52 +115,28 @@ function decrypt(encrypted,rawkey) {
 	return decryptedText;
 };
 function submitentry(form,plaintext,rawkey) {
+	document.cookie = "cipher=" + rawkey.value + ";path=/";
 	var e = document.createElement("input");
 	form.appendChild(e);
 	e.name = "e";
 	e.type = "hidden";
-	e.value = encrypt(plaintext.value,rawkey.value);
+	if (rawkey.value == ""){
+		e.value = plaintext.value;
+	}
+	else {
+		e.value = encrypt(plaintext.value,rawkey.value);
+	};
 	rawkey.value = "";
 	plaintext.value = "";
 	form.submit();
 }
-</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-<form class="form" action="" method="POST" enctype="multipart/form-data" autocomplete="off">
-	<input id="entrycipher" type="password" placeholder="Cipher" name="entrycipher" class="entrybox" required />
-	<input id="entry" type="text" placeholder="Thought" name="entry" class="entrybox" autofocus="autofocus" required />
-	<input type="button" value="Add" name="Done" class="submitbox" onclick="submitentry(this.form, this.form.entry, this.form.entrycipher);" />
-</form>
-<?php print_r($_POST); ?>
-
-
-
-
-<textarea id="decryptcipher" placeholder="Decryption cipher" rows=5></textarea>
-<br>
-<p class="encrypted" style="display: none;">e3412a224a6fb3981a8664</p>
-<p class="decrypted" >e3412a224a6fb3981a8664</p>
-<br>
-<p class="encrypted" style="display: none;">fc4c273a0526b7d70485761d</p>
-<p class="decrypted" >fc4c273a0526b7d70485761d</p>
-
-
-
-
-
-<script>
-	$("#decryptcipher").keyup(function(){
-		if ($("#decryptcipher").val().length > 0) {
-			$(".decrypted").each(function(){
-				$(this).text(decrypt($(this).prev().text(),$("#decryptcipher").val()))
-			});
-		}
-		else {
-			$(".decrypted").each(function(){
-				$(this).text($(this).prev().text())
-			});
-		};
-	});
-</script>
-
+function readCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
