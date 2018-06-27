@@ -69,9 +69,9 @@ sec_session_start();
 			<form class="form" action="" method="post" enctype="multipart/form-data" autocomplete="off">
 				<!--input  type="text" placeholder="Thought" name="entry" class="entrybox" autofocus="autofocus" required />
 				<input type="submit" value="Add" name="Done" class="submitbox" /--->
-				<input id="entrycipher" type="password" placeholder="Cipher" name="entrycipher" class="entrybox" required />
-				<input id="entry" type="text" placeholder="Thought" name="entry" class="entrybox" autofocus="autofocus" required />
-				<input type="button" value="Add" name="Done" class="submitbox" onclick="submitentry(this.form, this.form.entry, this.form.entrycipher);" />
+				<input id="entrycipher" type="password" placeholder="Cipher" name="entrycipher" class="entrybox enterable" required />
+				<input id="entryraw" type="text" placeholder="Thought" name="entry" class="entrybox enterable" autofocus="autofocus" required />
+				<input id="addbutton" type="button" value="Add" name="Done" class="submitbox" onclick="submitentry(this.form, this.form.entry, this.form.entrycipher);" />
 			</form>
 			<h2>Today</h2>
 			<?php
@@ -134,8 +134,15 @@ sec_session_start();
 		};
 		?>
 		<script type="text/javascript">
+			//As submit button is no longer a "real" button://
+			$(".enterable").keyup(function enterkeyup(event){
+				console.log(event.keyCode);
+				if (event.keyCode === 13) {
+					$("#addbutton").click();
+				}
+			});
 			//ON THE FLY DECRYPTION//
-			$("#entrycipher").keyup(function(){
+			$("#entrycipher").keyup(function decryptkeyup(){
 				if ($("#entrycipher").val().length > 0) {
 					$(".decrypted").each(function(){
 						$(this).text(decrypt($(this).prev().text(),$("#entrycipher").val()))
