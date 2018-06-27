@@ -1,0 +1,20 @@
+<script type="text/javascript">
+byteArray = new Uint8Array([170, 145, 86, 162, 100, 186, 201, 226, 151, 50, 40, 184, 15, 162, 172, 164]);
+function toHexString(byteArray) {
+  return Array.prototype.map.call(byteArray, function(byte) {
+    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+  }).join('');
+}
+function toByteArray(hexString) {
+  var result = [];
+  while (hexString.length >= 2) {
+    result.push(parseInt(hexString.substring(0, 2), 16));
+    hexString = hexString.substring(2, hexString.length);
+  }
+  return result;
+}
+hexString = toHexString(byteArray);
+byteArray = toByteArray(hexString);
+console.log(hexString);
+console.log(byteArray);
+</script>

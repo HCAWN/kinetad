@@ -225,13 +225,22 @@ sec_session_start();
 				echo '<p class="error">Error Logging In!</p>';
 			};
 			?> 
-			<img id="pixabay" src="graphics/background.jpg">
+			<div id="pixabay"></div>
 			<form action="includes/process_login.php" method="post" name="login_form">
 				<h2 style="text-align: center;" >Login</h2>        
 				<input type="text" placeholder="Username" name="username" class="textinp"/>
 				<input type="password" placeholder="Password" name="password" id="password" class="textinp"/>
 				<input type="button" value="Login" id="submt" class="buttonclk" onclick="formhash(this.form, this.form.password);" /> 
 			</form>
+			<script type="text/javascript">
+				//As submit button is no longer a "real" button://
+				$(document).keyup(function enterkeyup(event){
+					console.log(event.keyCode);
+					if (event.keyCode === 13) {
+						$("#submt").click();
+					}
+				});
+			</script>
 			<?php
 		endif;
 		?>

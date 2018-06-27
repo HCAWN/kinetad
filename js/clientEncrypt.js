@@ -99,6 +99,7 @@ function encrypt(plaintext,rawkey) {
 	var key = aesjs.utils.hex.toBytes(sha256(rawkey));
 	
 	var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
+	console.log(aesCtr);
 	var encryptedBytes = aesCtr.encrypt(textBytes);
 
 	var encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
@@ -128,7 +129,7 @@ function submitentry(form,plaintext,rawkey) {
 	};
 	rawkey.value = "";
 	plaintext.value = "";
-	form.submit();
+	//form.submit();
 }
 function readCookie(name) {
 	var nameEQ = name + "=";
