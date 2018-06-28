@@ -129,7 +129,7 @@ function submitentry(form,plaintext,rawkey) {
 	};
 	rawkey.value = "";
 	plaintext.value = "";
-	//form.submit();
+	form.submit();
 }
 function readCookie(name) {
 	var nameEQ = name + "=";
