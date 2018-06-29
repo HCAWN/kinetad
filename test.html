@@ -1,27 +1,4 @@
 <script type="text/javascript">
-
-byteArray = new Uint8Array([170, 145, 86, 162, 100, 186, 201, 226, 151, 50, 40, 184, 15, 162, 172, 164]);
-function toHexString(byteArray) {
-  return Array.prototype.map.call(byteArray, function(byte) {
-	return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-  }).join('');
-}
-function toByteArray(hexString) {
-  var result = [];
-  while (hexString.length >= 2) {
-	result.push(parseInt(hexString.substring(0, 2), 16));
-	hexString = hexString.substring(2, hexString.length);
-  }
-  return result;
-}
-hexString = toHexString(byteArray);
-byteArray = toByteArray(hexString);
-//console.log(hexString);
-//console.log(byteArray);
-</script>
-
-
-<script type="text/javascript">
 // Resources:
 // https://github.com/diafygi/webcrypto-examples
 // https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey
@@ -29,46 +6,26 @@ byteArray = toByteArray(hexString);
 // Tested in Firefox Developer Edition
 
 function strToArrayBuffer(str) {
-  var buf = new ArrayBuffer(str.length * 2);
-  var bufView = new Uint16Array(buf);
-  for (var i = 0, strLen = str.length; i < strLen; i++) {
+	var buf = new ArrayBuffer(str.length * 2);
+	var bufView = new Uint16Array(buf);
+	for (var i = 0, strLen = str.length; i < strLen; i++) {
 	bufView[i] = str.charCodeAt(i);
-  }
-  return buf;
+	}
+	return buf;
 }
 function arrayBufferToString(buf) {
-  return String.fromCharCode.apply(null, new Uint16Array(buf));
+	return String.fromCharCode.apply(null, new Uint16Array(buf));
+}
+function arrayBufferToHex(buf) { // buffer is an ArrayBuffer
+	return Array.prototype.map.call(new Uint8Array(buf), x => ('00' + x.toString(16)).slice(-2)).join('');
+}
+function hexToArrayBuffer(hex) {
+	var typedArray = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(function (h) {
+	  return parseInt(h, 16)
+	}))
+	return typedArray;
 }
 
-
-
-// var plainText = 'This is some plaintext';
-// //console.log('Plain Text: ' + plainText);
-
-
-
-
-// var secretKey;
-// window.crypto.subtle.generateKey(algoKeyGen, true, keyUsages).then(function (key) {
-//   secretKey = key;
-
-
-
-//   return window.crypto.subtle.encrypt(algoEncrypt, key, strToArrayBuffer(plainText));
-// }).then(function (cipherText) {
-//   //console.log('Cipher Text: ' + arrayBufferToString(cipherText));
-//   //console.log('IV: ' + iv);
-//   //console.log(secretKey);
-
-
-
-
-//   return window.crypto.subtle.decrypt(algoEncrypt, secretKey, cipherText);
-// }).then(function (plainText) {
-//   //console.log('Plain Text: ' + arrayBufferToString(plainText));
-// }).catch (function (err) {
-//   console.log('Error: ' + err.message);
-// });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,8 +71,7 @@ window.crypto.subtle.importKey(
 	return window.crypto.subtle.encrypt(algoEncrypt, webKey, strToArrayBuffer(plainText));
 }).then(function (cipherText) {
 	console.log('Cipher Text: ' + arrayBufferToString(cipherText));
-	var enc = new TextEncoder();
-	console.log(enc.encode(iv));
+	console.log('IV: ' + arrayBufferToString(iv));
 	//console.log(passphraseKey);
 });
 
@@ -123,9 +79,9 @@ window.crypto.subtle.importKey(
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 var saltBuffer = strToArrayBuffer('e85c53e7f119d41fd7895cdc9d7bb9dd');
-var cipherText = [73, 0, 32, 0, 104, 0, 195, 0, 171, 0, 97, 0, 114, 0, 116, 0, 32, 0, 195, 0, 165, 0, 114, 0, 116, 0, 32, 0, 97, 0, 110, 0, 100, 0, 32, 0, 194, 0, 163, 0, 36, 0, 194, 0, 162, 0, 33, 0];
+var cipherText = hexToArrayBuffer('b692b3b15ef5de6efa38d306302a3a6df8bea71a002a26818b31ea209f3768dfb4f3534ad86c2fe0553d4b3f570f23887ee6731019e5c3fb49512aed');
 var passphraseKey = strToArrayBuffer("I hëart årt and £$¢!");
-var Invec = [123, 186, 94, 117, 152, 38, 26, 52, 120, 231, 137, 194];
+var Invec = hexToArrayBuffer('a9be97b971a936e8b19ff1e6');
 var algoDecrypt = {
   name: 'AES-GCM',
   iv: Invec,
