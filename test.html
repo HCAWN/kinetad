@@ -1,9 +1,4 @@
 <script type="text/javascript">
-// Resources:
-// https://github.com/diafygi/webcrypto-examples
-// https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey
-// http://blog.engelke.com/tag/webcrypto/
-// Tested in Firefox Developer Edition
 
 function strToArrayBuffer(str) {
 	var buf = new ArrayBuffer(str.length * 2);
@@ -29,97 +24,105 @@ function hexToArrayBuffer(hex) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
+function encrypt() {
+	var saltBuffer = strToArrayBuffer('e85c53e7f119d41fd7895cdc9d7bb9dd');
+	var plainText = 'hbfyw gh48ogh0ewr 8gh09854w0g98 uerwhgiu54895400343 $%^&*(&(^%$ *()(^&%*&%*&^(*&)(^&%*^&$%&^%*';
+	var passphraseKey = strToArrayBuffer("I hëart årt and £$¢!");
 
-var saltBuffer = strToArrayBuffer('e85c53e7f119d41fd7895cdc9d7bb9dd');
-var plainText = 'This is some plaintext';
-var passphraseKey = strToArrayBuffer("I hëart årt and £$¢!");
+	var algoKeyGen = {
+	  name: 'AES-GCM',
+	  length: 256
+	};
+	var iv = window.crypto.getRandomValues(new Uint8Array(12));
+	var algoEncrypt = {
+	  name: 'AES-GCM',
+	  iv: iv,
+	  tagLength: 128
+	};
+	var keyUsages = [
+	  'encrypt',
+	  'decrypt'
+	];
 
-var algoKeyGen = {
-  name: 'AES-GCM',
-  length: 256
+	window.crypto.subtle.importKey(
+	  'raw', 
+	  passphraseKey, 
+	  {name: 'PBKDF2'}, 
+	  false, 
+	  ['deriveBits', 'deriveKey']
+	).then(function(key) {
+	  return window.crypto.subtle.deriveKey(
+		{ "name": 'PBKDF2',
+		  "salt": saltBuffer,
+		  "iterations": 100,
+		  "hash": 'SHA-256'
+		},
+		key,
+		{ "name": 'AES-GCM', "length": 256 },
+		true,
+		[ "encrypt", "decrypt" ]
+	  );
+	}).then(function(webKey) {
+		return window.crypto.subtle.encrypt(algoEncrypt, webKey, strToArrayBuffer(plainText));
+	}).then(function (cipherText) {
+		console.log('Cipher Text: ' + arrayBufferToHex(cipherText));
+		console.log('IV: ' + arrayBufferToHex(iv));
+		console.log(arrayBufferToHex(iv)+arrayBufferToHex(cipherText));
+	});
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+function decrypt() {
+	var data = 'd38524312ecdc5be68967e8f1f8daeded367f14db12f9d7f7ad962579d1fad9b15fca3fcb9077fad94fae6bf987945f76da3d489c225d74ff846aed78bacf2ff80f6308202af49c5583da2e615194b6dfeaab2afe4017ffd98b8c3a0ec3bc9be5ac0b070a06bc2a6798dce33cbb7a9de6ce40f881ba69e5dc9845a0c015985026a82c2359ff6120a246df37b5d64e92a239be0322dab0af6608521dd83481b54959f0b721a887ac91c6b1ba3a40d73171425087a1b022f3d42405846ed7f34b9f64900860237cd691ff28ee69bb33ae39c5830ff22643dff';
+	var Invec = hexToArrayBuffer(data.slice(0, 24));
+	var cipherText =  hexToArrayBuffer(data.slice(24));
+
+	var saltBuffer = strToArrayBuffer('e85c53e7f119d41fd7895cdc9d7bb9dd');
+	var passphraseKey = strToArrayBuffer("I hëart årt and £$¢!");
+
+	var algoDecrypt = {
+	  name: 'AES-GCM',
+	  iv: Invec,
+	  tagLength: 128
+	};
+
+	window.crypto.subtle.importKey(
+	  'raw', 
+	  passphraseKey, 
+	  {name: 'PBKDF2'}, 
+	  false, 
+	  ['deriveBits', 'deriveKey']
+	).then(function(key) {
+	  return window.crypto.subtle.deriveKey(
+		{ "name": 'PBKDF2',
+		  "salt": saltBuffer,
+		  "iterations": 100,
+		  "hash": 'SHA-256'
+		},
+		key,
+		{ "name": 'AES-GCM', "length": 256 },
+		true,
+		[ "encrypt", "decrypt" ]
+	  );
+	}).then(function(webKey) {
+		return window.crypto.subtle.decrypt(algoDecrypt, webKey, cipherText);
+	}).then(function (plainText) {
+		console.log('Plain Text: ' + arrayBufferToString(plainText));
+	}).catch (function (err) {
+	  console.log('Error: ' + err.message);
+	});
 };
-var iv = window.crypto.getRandomValues(new Uint8Array(12));
-var algoEncrypt = {
-  name: 'AES-GCM',
-  iv: iv,
-  tagLength: 128
-};
-var keyUsages = [
-  'encrypt',
-  'decrypt'
-];
-
-window.crypto.subtle.importKey(
-  'raw', 
-  passphraseKey, 
-  {name: 'PBKDF2'}, 
-  false, 
-  ['deriveBits', 'deriveKey']
-).then(function(key) {
-  return window.crypto.subtle.deriveKey(
-	{ "name": 'PBKDF2',
-	  "salt": saltBuffer,
-	  "iterations": 100,
-	  "hash": 'SHA-256'
-	},
-	key,
-	{ "name": 'AES-GCM', "length": 256 },
-	true,
-	[ "encrypt", "decrypt" ]
-  );
-}).then(function(webKey) {
-	return window.crypto.subtle.encrypt(algoEncrypt, webKey, strToArrayBuffer(plainText));
-}).then(function (cipherText) {
-	console.log('Cipher Text: ' + arrayBufferToString(cipherText));
-	console.log('IV: ' + arrayBufferToString(iv));
-	//console.log(passphraseKey);
-});
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-var saltBuffer = strToArrayBuffer('e85c53e7f119d41fd7895cdc9d7bb9dd');
-var cipherText = hexToArrayBuffer('b692b3b15ef5de6efa38d306302a3a6df8bea71a002a26818b31ea209f3768dfb4f3534ad86c2fe0553d4b3f570f23887ee6731019e5c3fb49512aed');
-var passphraseKey = strToArrayBuffer("I hëart årt and £$¢!");
-var Invec = hexToArrayBuffer('a9be97b971a936e8b19ff1e6');
-var algoDecrypt = {
-  name: 'AES-GCM',
-  iv: Invec,
-  tagLength: 128
-};
-
-window.crypto.subtle.importKey(
-  'raw', 
-  passphraseKey, 
-  {name: 'PBKDF2'}, 
-  false, 
-  ['deriveBits', 'deriveKey']
-).then(function(key) {
-  return window.crypto.subtle.deriveKey(
-	{ "name": 'PBKDF2',
-	  "salt": saltBuffer,
-	  "iterations": 100,
-	  "hash": 'SHA-256'
-	},
-	key,
-	{ "name": 'AES-GCM', "length": 256 },
-	true,
-	[ "encrypt", "decrypt" ]
-  );
-}).then(function(webKey) {
-	return window.crypto.subtle.decrypt(algoDecrypt, webKey, cipherText);
-}).then(function (plainText) {
-	console.log('Plain Text: ' + arrayBufferToString(plainText));
-}).catch (function (err) {
-  console.log('Error: ' + err.message);
-});
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-
+encrypt();
+decrypt();
 
 
 
