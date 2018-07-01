@@ -1,3 +1,4 @@
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <script type="text/javascript">
 
 function strToArrayBuffer(str) {
@@ -24,7 +25,7 @@ function hexToArrayBuffer(hex) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
-function encrypt(plainText,passphraseKey) {
+function encrypt(form,plainText,passphraseKey) {
 	var saltBuffer = strToArrayBuffer('e85c53e7f119d41fd7895cdc9d7bb9dd');
 
 	var algoKeyGen = {
@@ -42,9 +43,9 @@ function encrypt(plainText,passphraseKey) {
 	  'decrypt'
 	];
 
-	data = window.crypto.subtle.importKey(
+	var data = window.crypto.subtle.importKey(
 	  'raw', 
-	  strToArrayBuffer(passphraseKey), 
+	  strToArrayBuffer(passphraseKey.value), 
 	  {name: 'PBKDF2'}, 
 	  false, 
 	  ['deriveBits', 'deriveKey']
@@ -61,15 +62,29 @@ function encrypt(plainText,passphraseKey) {
 		[ "encrypt", "decrypt" ]
 	  );
 	}).then(function(webKey) {
-		return window.crypto.subtle.encrypt(algoEncrypt, webKey, strToArrayBuffer(plainText));
+		return window.crypto.subtle.encrypt(algoEncrypt, webKey, strToArrayBuffer(plainText.value));
 	}).then(function (cipherText) {
 		//console.log('Cipher Text: ' + arrayBufferToHex(cipherText));
 		//console.log('IV: ' + arrayBufferToHex(iv));
-		console.log(arrayBufferToHex(iv)+arrayBufferToHex(cipherText));
+		//console.log(arrayBufferToHex(iv)+arrayBufferToHex(cipherText));
 		//return arrayBufferToHex(iv)+arrayBufferToHex(cipherText);
-		return "hello";
+
+		document.cookie = "cipher=" + passphraseKey.value + ";path=/";
+		var e = document.createElement("input");
+		form.appendChild(e);
+		e.name = "e";
+		e.type = "hidden";
+		if (passphraseKey.value == ""){
+			e.value = plainText.value;
+		}
+		else {
+			e.value = arrayBufferToHex(iv)+arrayBufferToHex(cipherText);
+		};
+		passphraseKey.value = "";
+		plainText.value = "";
+		//form.submit();
 	});
-	return 'howdy';
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +104,7 @@ function decrypt(data,passphraseKey) {
 	  tagLength: 128
 	};
 
-	window.crypto.subtle.importKey(
+	var data = window.crypto.subtle.importKey(
 	  'raw', 
 	  strToArrayBuffer(passphraseKey), 
 	  {name: 'PBKDF2'}, 
@@ -110,24 +125,36 @@ function decrypt(data,passphraseKey) {
 	}).then(function(webKey) {
 		return window.crypto.subtle.decrypt(algoDecrypt, webKey, cipherText);
 	}).then(function (plainText) {
-		console.log('Plain Text: ' + arrayBufferToString(plainText));
+		//console.log('Plain Text: ' + arrayBufferToString(plainText));
 		return arrayBufferToString(plainText);
 	}).catch (function (err) {
-	  console.log('Error: ' + err.message);
-	  console.log('Plain Text: ' + arrayBufferToString(cipherText));
+	  //console.log('Error: ' + err.message);
+	  //console.log('wrong Plain Text: ' + arrayBufferToString(cipherText));
+	  return arrayBufferToHex(Invec) + arrayBufferToHex(cipherText);
 	});
+	return data
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
+</script>
 
+<form class="form" action="" method="post" enctype="multipart/form-data" autocomplete="off">
+	<input id="entrycipher" type="password" placeholder="Cipher" name="entrycipher" class="entrybox enterable" required />
+	<input id="entryraw" type="text" placeholder="Thought" name="entry" class="entrybox enterable" autofocus="autofocus" required />
+	<input id="addbutton" type="button" value="Add" name="Done" class="submitbox" onclick="encrypt(this.form, this.form.entry, this.form.entrycipher);" />
+</form>
 
-var jimmy = encrypt('How do you feel?',"I hëart årt and £$¢!");
-console.log(jimmy);
+<p class="encrypted" >c114183237735db03c18d5c078363ed3be3abe42a8c168729984b43434f26f0406b1d4fe3e5c1dca17924a0b3080684d</p>
+<p class="decrypted" >c114183237735db03c18d5c078363ed3be3abe42a8c168729984b43434f26f0406b1d4fe3e5c1dca17924a0b3080684d</p>
 
-decrypt('2f176332c0e9ab89b5193f6a9605eb1811603e5b147d1e668fc41f8f489731835665630ff2cfa26b04b0b960862e7020df93df44153273ccef737429',"I hëart årt and £$¢!");
-
-
-
-
+<script>
+	$("#entrycipher").keyup(function decryptkeyup(){
+		$(".decrypted").each(function(){
+			var savethis = $(this);
+			decrypt($(this).prev().text(),$("#entrycipher").val()).then(function(result) {
+				$(savethis).text(result);
+			});
+		});
+	});
 </script>

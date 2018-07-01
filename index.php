@@ -27,7 +27,6 @@ sec_session_start();
 
 		<link href="styles/main.css" rel="stylesheet" type="text/css" />
 		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-		<script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
 		<script type="text/JavaScript" src="js/clientEncrypt.js"></script> 
 		<link href="https://fonts.googleapis.com/css?family=Cormorant+SC" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
@@ -67,11 +66,9 @@ sec_session_start();
 		<div id=main>
 			<a name="#a"></a>
 			<form class="form" action="" method="post" enctype="multipart/form-data" autocomplete="off">
-				<!--input  type="text" placeholder="Thought" name="entry" class="entrybox" autofocus="autofocus" required />
-				<input type="submit" value="Add" name="Done" class="submitbox" /--->
-				<input id="entrycipher" type="password" placeholder="Cipher" name="entrycipher" class="entrybox enterable" required />
+				<input id="entrycipher" type="text" placeholder="Cipher" name="entrycipher" class="entrybox enterable" required />
 				<input id="entryraw" type="text" placeholder="Thought" name="entry" class="entrybox enterable" autofocus="autofocus" required />
-				<input id="addbutton" type="button" value="Add" name="Done" class="submitbox" onclick="submitentry(this.form, this.form.entry, this.form.entrycipher);" />
+				<input id="addbutton" type="button" value="Add" name="Done" class="submitbox" onclick="encrypt(this.form, this.form.entry, this.form.entrycipher);" />
 			</form>
 			<h2>Today</h2>
 			<?php
@@ -136,26 +133,20 @@ sec_session_start();
 		<script type="text/javascript">
 			//As submit button is no longer a "real" button://
 			$(".enterable").keyup(function enterkeyup(event){
-				console.log(event.keyCode);
 				if (event.keyCode === 13) {
 					$("#addbutton").click();
 				}
 			});
 			//ON THE FLY DECRYPTION//
 			$("#entrycipher").keyup(function decryptkeyup(){
-				if ($("#entrycipher").val().length > 0) {
-					$(".decrypted").each(function(){
-						$(this).text(decrypt($(this).prev().text(),$("#entrycipher").val()))
+				$(".decrypted").each(function(){
+					var savethis = $(this);
+					decrypt($(this).prev().text(),$("#entrycipher").val()).then(function(result) {
+						$(savethis).text(result);
 					});
-				}
-				else {
-					$(".decrypted").each(function(){
-						$(this).text($(this).prev().text())
-					});
-				};
+				});
 			});
 			if (readCookie('cipher')) {
-				$("#entrycipher").val(readCookie('cipher'));
 				$("#entrycipher").val(readCookie('cipher'));
 				$('#entrycipher').keyup();
 			};
@@ -176,19 +167,17 @@ sec_session_start();
 		<?php
 		if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
 		?>
-		<!--script type="text/javascript">
+		<script type="text/javascript">
 			//Function to switch to secure mode after 30 seconds of inactive mouse movment
 			var timeout = null;
 			$(document).on('mousemove', function() {
 				clearTimeout(timeout);
 				timeout = setTimeout(function() {
-					//parse current text entered to the URL to stop it being lost and annoying user.
-					var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?entry=' + $('.entrybox').val();
-					window.history.pushState({path:newurl},'',newurl);
-					$('#title').trigger("click")
+					$("#entrycipher").val("");
+					$('#entrycipher').keyup();
 				}, 30000);
 			});
-		</script-->
+		</script>
 		<a style="position: fixed; bottom: 0; left: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/changepassword">Change Password</a>
 		<a style="position: fixed; bottom: 0; right: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/export">Export</a>
 		<?php
