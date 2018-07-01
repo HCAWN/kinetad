@@ -42,7 +42,7 @@ body {
 	z-index: 10;
 }
 form {
-	height: 30px;
+	height: 50px;
 	margin-top: 10px;
 	cursor: default;
 }
@@ -170,7 +170,7 @@ p	{
 #wordcount {
 	position: fixed;
 	right: 0;
-	top: 40px;
+	top: 60px;
 	text-align: right;
 }
 input {
