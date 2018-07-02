@@ -69,7 +69,7 @@ form {
     transform: translateX(-50%);
     cursor: pointer;
 }
-#entry {
+.entry {
 	margin-bottom: -30px;
 }
 h1 {

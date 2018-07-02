@@ -71,42 +71,50 @@ sec_session_start();
 				<input id="addbutton" type="button" value="Add" name="Done" class="submitbox" onclick="encrypt(this.form, this.form.entry, this.form.entrycipher);" />
 			</form>
 			<h2>Today</h2>
-			<?php
-			$current_date = strtotime('today midnight');
-			$FourAM = $current_date + 14400;
-			$word_count = 0;
-			while ($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) : ?>
-				<div id="entry">
-					<?php
-					$entry_date = strtotime($row['datee']);
-					$emptydate = true;
-					while ($emptydate == true) {
-						if ($entry_date < $FourAM) {
-							$FourAM -= 86400;
-							echo "<h2><a name=\"#a\">".date('Y-m-d', $FourAM)."</a></h2>";
-						}
-						else {
-							$emptydate = false;
-						};
-					};
-					?>
-					<h3 id="time"><?php echo date('H:i:s', $entry_date);?></h3>
-					<h3 id="number"><?php echo $row['number']; ?></h3>
+			<div class="entries download">
+				<?php
+				$current_date = strtotime('today midnight');
+				$FourAM = $current_date + 14400;
+				$word_count = 0;
+				while ($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) : ?>
+					<div class="entry">
 						<?php
-						if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
-							$toecho = openssl_decrypt($row['entry'], "aes-256-gcm", $_SESSION['encryptstring'], $options=0, hex2bin($row['IV']), hex2bin($row['tag']));
-						}
-						else {
-							$toecho = $row['entry'];
+						$entry_date = strtotime($row['datee']);
+						$emptydate = true;
+						while ($emptydate == true) {
+							if ($entry_date < $FourAM) {
+								$FourAM -= 86400;
+								if ($entry_date < $FourAM) {
+									echo "<h2><a name=\"#a\">".date('Y-m-d', $FourAM)."</a></h2>";
+								}
+								else {
+									echo "<h2><a class=\"col datehead\" name=\"#a\">".date('Y-m-d', $FourAM)."</a></h2>";
+								};
+								
+							}
+							else {
+								$emptydate = false;
+							};
 						};
-						echo '<p class="encrypted" style="display: none;">'.$toecho.'</p>';
-						$word_count += str_word_count($toecho);
 						?>
-					<?php echo '<p class="decrypted" >'.$toecho.'</p>'; ?>
-				</div>
-			<?php
-			endwhile
-			?>
+						<h3 class="col" id="time"><?php echo date('H:i:s', $entry_date);?></h3>
+						<h3 class="col" id="number"><?php echo $row['number']; ?></h3>
+							<?php
+							if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
+								$toecho = openssl_decrypt($row['entry'], "aes-256-gcm", $_SESSION['encryptstring'], $options=0, hex2bin($row['IV']), hex2bin($row['tag']));
+							}
+							else {
+								$toecho = $row['entry'];
+							};
+							echo '<p class="encrypted" style="display: none;">'.$toecho.'</p>';
+							$word_count += str_word_count($toecho);
+							?>
+						<?php echo '<p class="col decrypted" >'.$toecho.'</p>'; ?>
+					</div>
+				<?php
+				endwhile
+				?>
+			</div>
 			<h2 id="wordcount">Total words: <?php echo number_format($word_count); ?></h2>
 		</div>
 		<?php
@@ -130,6 +138,8 @@ sec_session_start();
 			exit;
 		};
 		?>
+		<a style="position: fixed; bottom: 0; left: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/changepassword">Change Password</a>
+		<a style="position: fixed; bottom: 0; right: 0; cursor: pointer; color: inherit; text-decoration: none;" href="" download="Kinetad_Export.csv">Export</a>
 		<script type="text/javascript">
 			//As submit button is no longer a "real" button://
 			$(".enterable").keyup(function enterkeyup(event){
@@ -146,6 +156,46 @@ sec_session_start();
 					});
 				});
 			});
+			//Submit download//
+			$("a[download]").click(function(){
+			    $("div.download").toCSV(this);    
+			});
+			//encode webpage using js
+			jQuery.fn.toCSV = function(link) {
+			  var $link = $(link);
+			  var data = $(this).first(); //Only one table
+			  var csvData = [];
+			  var tmpArr = [];
+			  var tmpStr = '';
+			  data.find(".entry").each(function() {
+					tmpArr = [];
+						$(this).find(".col").each(function() {
+							if($(this).hasClass("datehead")) {
+								currentdate = $(this).text();
+								colnum = 0;
+							}
+							if(colnum == 4) {
+								tmpStr = currentdate.replace(/"/g, '""');
+								tmpArr.push('"' + tmpStr + '"');
+								colnum = 1;
+							}
+							if($(this).text().match(/^-{0,1}\d*\.{0,1}\d+$/)) {
+								tmpArr.push(parseFloat($(this).text()));
+								colnum++;
+							}
+							else {
+								tmpStr = $(this).text().replace(/"/g, '""');
+								tmpArr.push('"' + tmpStr + '"');
+								colnum++;
+							}
+						});
+					csvData.push(tmpArr.join(','));
+			  });
+			  var output = csvData.join('\n');
+			  var uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(output);
+			  $link.attr("href", uri);
+			  console.log(uri);
+			}
 			if (readCookie('cipher')) {
 				$("#entrycipher").val(readCookie('cipher'));
 				$('#entrycipher').keyup();
@@ -167,7 +217,7 @@ sec_session_start();
 		<?php
 		if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
 		?>
-		<script type="text/javascript">
+<!-- 		<script type="text/javascript">
 			//Function to switch to secure mode after 30 seconds of inactive mouse movment
 			var timeout = null;
 			$(document).on('mousemove', function() {
@@ -177,9 +227,7 @@ sec_session_start();
 					$('#entrycipher').keyup();
 				}, 30000);
 			});
-		</script>
-		<a style="position: fixed; bottom: 0; left: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/changepassword">Change Password</a>
-		<a style="position: fixed; bottom: 0; right: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/export">Export</a>
+		</script> -->
 		<?php
 		};
 		else :
