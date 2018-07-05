@@ -173,10 +173,11 @@ p	{
 	top: 60px;
 	text-align: right;
 }
-input {
+input, textarea {
      background:none!important;
      color:inherit;
      border:none; 
      padding:0!important;
      font: inherit;
+     resize: none;
 }

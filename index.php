@@ -67,11 +67,11 @@ sec_session_start();
 			<a name="#a"></a>
 			<form class="form" action="" method="post" enctype="multipart/form-data" autocomplete="off">
 				<input id="entrycipher" type="text" placeholder="Cipher" name="entrycipher" class="entrybox enterable" required />
-				<input id="entryraw" type="text" placeholder="Thought" name="entry" class="entrybox enterable" autofocus="autofocus" required />
+				<textarea id="entryraw" type="text" style="overflow:hidden; height: 20px;" placeholder="Thought" name="entry" class="entrybox enterable" autofocus="autofocus" onkeyup="textAreaAdjust(this)" required /></textarea>
 				<input id="addbutton" type="button" value="Add" name="Done" class="submitbox" onclick="encrypt(this.form, this.form.entry, this.form.entrycipher);" />
 			</form>
-			<h2>Today</h2>
-			<div class="entries download">
+			<h2 class="todaytitle" style="position: relative;">Today</h2>
+			<div class="entries download" style="position: relative;">
 				<?php
 				$current_date = strtotime('today midnight');
 				$FourAM = $current_date + 14400;
@@ -115,7 +115,7 @@ sec_session_start();
 				endwhile
 				?>
 			</div>
-			<h2 id="wordcount">Total words: <?php echo number_format($word_count); ?></h2>
+			<h2 class="toptitle" id="wordcount">Total words: <?php echo number_format($word_count); ?></h2>
 		</div>
 		<?php
 		if (isset($_POST['e'])) {
@@ -158,8 +158,16 @@ sec_session_start();
 			});
 			//Submit download//
 			$("a[download]").click(function(){
-			    $("div.download").toCSV(this);    
+			    $("div.download").toCSV(this);
 			});
+			//Change text area size//
+			function textAreaAdjust(o) {
+				o.style.height = "1px";
+				o.style.height = (0+o.scrollHeight)+"px";
+				$('.todaytitle').css('top', (o.scrollHeight-20)+"px");
+				$('#wordcount').css('top', (40+o.scrollHeight)+"px");
+				$('.entries').css('top', (o.scrollHeight-20)+"px");
+			}
 			//encode webpage using js
 			jQuery.fn.toCSV = function(link) {
 			  var $link = $(link);
