@@ -181,3 +181,9 @@ input, textarea {
      font: inherit;
      resize: none;
 }
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
