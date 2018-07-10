@@ -28,11 +28,52 @@ Online journals have great features over normal ones, Kinetad builds on these:
 * Full security.
 * `CRTL + f`
 * Opportunity to export and analyse your entries (great to see how often you talk about certain things or more).
- ## Usage
-[Kinetad Online Journal](https://www.kinetad.com "Kinetad - open source online journal") is a great place to try it out. Simply visit [The registration page](https://www.kinetad.com/register "Register for kinetad") input a unique username and strong password and off you go.
-If you're a little more into running your own instance, you'll need a hosting running php and a SQL database. MORE DETAIL HERE
-### Password 
-Your password forms part of your server-side encryption cipher and so cannot be easily be changed. To do so, your entire journal needs to be re-encrypted.
+## Usage
+[Kinetad Online Journal](https://www.kinetad.com "Kinetad - open source online journal") is a great place to try it out. Below are the different aspects to explore:
+### Register
+Visit the [Registration page](https://www.kinetad.com/register "Kinetad - open source online journal"), input a unique username, and a strong password and off you go.
+### Adding Entries
+Entries are written paragraph by paragraph with the option of a client side encryption to be performed with a pass phrase. Each entry can use a different pass phrase (though not advised).
 ### Pass Phrase
-Your pass phrase (if used) is solely client side and so **at present cannot be changed** as there is no simple way to mix client and server side encryption rewriting without compromising the security of the users data.
+Your pass phrase (if used) is solely client side and so **at present cannot be changed** as there is no simple way to mix client and server side encryption rewriting without compromising the security of the users data. When making a new entry with a pass phrase, the passphrase is written as a cookie to your browser to make adding multiple entries easier. The cookie expires when you logout.
+### Password 
+Your password forms part of your server-side encryption cipher and so cannot be easily be changed. To do so, your entire journal needs to be re-encrypted. This is done via the [Change password page](https://kinetad.com/changepassword "Kinetad - open source online journal"). Changing your password will not affect your pass phrase.
+### Navigation
+Previous and Next day buttons do as one would expect. `CRTL + f` is a nice way to find things also. Exporting is suggested for more in-depth reviewing.
+### Export
+Exporting is a JS function (once again to ensure users data security isn't compromised). This function exports the entries as the appear in the browser at the time. A CSV file is generated containing:
+`entry number, date, entry contents`
+## Running your own instance
+If you are a little more interested in running your own instance, you'll need:
+* php server
+* MySQL
+### To install
+1. Clone the whole project into the root of your domain: `git clone https://github.com/HCAWN/kinetad.git`
+2. Create a new database
+3. create a SQL user with the following privileges in your newly created database:
+	 `CREATE`
+	 `SELECT`
+	 `DROP`*
+	 `INSERT`
+	 `UPDATE`
+4. Update `includes/psl-config.php` to match the SQL login and database information.
+5. Run the following SQL command to create the members table and login failure table:
+ > --
+-- Table structure for table \`login_attempts\`
+--
+CREATE TABLE IF NOT EXISTS \`login_attempts\` (
+  \`user_id\` int(11) NOT NULL,
+  \`time\` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+--
+-- Table structure for table \`members\`
+--
+CREATE TABLE IF NOT EXISTS \`members\` (
+  \`id\` int(11) NOT NULL AUTO_INCREMENT,
+  \`username\` varchar(30) NOT NULL,
+  \`password\` char(128) NOT NULL,
+  \`salt\` char(128) NOT NULL,
+  PRIMARY KEY (\`id\`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+6. Use as outlined above!
