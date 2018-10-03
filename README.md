@@ -35,9 +35,11 @@ Visit the [Registration page](https://www.kinetad.com/register "Kinetad - open s
 ### Adding Entries
 Entries are written paragraph by paragraph with the option of a client side encryption to be performed with a pass phrase. Each entry can use a different pass phrase (though not advised).
 ### Pass Phrase
-Your pass phrase (if used) is solely client side and so **at present cannot be changed** as there is no simple way to mix client and server side encryption rewriting without compromising the security of the users data. When making a new entry with a pass phrase, the passphrase is written as a cookie to your browser to make adding multiple entries easier. The cookie expires when you logout.
+Your pass phrase (if used) is solely client side and so **at present cannot be changed** as there is no simple way to mix client and server side encryption rewriting without compromising the security of the users data. When making a new entry with a pass phrase, the pass phrase is written as a cookie to your browser to make adding multiple entries easier. The cookie expires when you logout.
 ### Password 
 Your password forms part of your server-side encryption cipher and so cannot be easily be changed. To do so, your entire journal needs to be re-encrypted. This is done via the [Change password page](https://kinetad.com/changepassword "Kinetad - open source online journal"). Changing your password will not affect your pass phrase.
+### Unlocking
+upon logging in, entries remain in an encrypted state for an additional privacy feature in case one has thier browser save passwords. This is **toggled by clicking on the heading.**
 ### Navigation
 Previous and Next day buttons do as one would expect. `CRTL + f` is a nice way to find things also. Exporting is suggested for more in-depth reviewing.
 ### Export
