@@ -3,7 +3,7 @@
 This is an expansion of a personal project to create an encrypted online journal. Allowing me to access it from anywhere and it remain secure.
 * Kinetad.com/register is the code in action, to use as a trial.
 * The journal uses double AES-256-GCM encryption - 
-	* Client side - with a pass phrase that exists client-side that never passes to the server.
+	* Client side - with a passphrase that exists client-side that never passes to the server.
     * Server side - with the cipher being the users password run through a SHA-512 hash.
 * The journal features time stamping and dating for beautiful logging.
 ## Encryption and Security Details
@@ -17,7 +17,7 @@ The aim of the project as it currently stands, is to allow enough encryption tha
 These three strings are combined with the user's password run through SHA-512 to decrypt the journal messages.
 The TAG acts as a checksum and will inform the decryption process if the message has been altered and not output anything.
 
-The raw text sent to the server for encryption may also be run through a client-side JS implementation of AES-256-GCM. This is a further privacy option for the user as the host could otherwise save the parsed password and use it to decrypt the sever side encrypted data. With client-side encryption, the pass phrase never leaves the client's browser and hence data cannot be decrypted by anybody other than that who created it.
+The raw text sent to the server for encryption may also be run through a client-side JS implementation of AES-256-GCM. This is a further privacy option for the user as the host could otherwise save the parsed password and use it to decrypt the sever side encrypted data. With client-side encryption, the passphrase never leaves the client's browser and hence data cannot be decrypted by anybody other than that who created it.
 
 ## Features
 Online journals have great features over normal ones, Kinetad builds on these:
@@ -33,13 +33,13 @@ Online journals have great features over normal ones, Kinetad builds on these:
 ### Register
 Visit the [Registration page](https://www.kinetad.com/register "Kinetad - open source online journal"), input a unique username, and a strong password and off you go.
 ### Adding Entries
-Entries are written paragraph by paragraph with the option of a client side encryption to be performed with a pass phrase. Each entry can use a different pass phrase (though not advised).
-### Pass Phrase
-Your pass phrase (if used) is solely client side and so **at present cannot be changed** as there is no simple way to mix client and server side encryption rewriting without compromising the security of the users data. When making a new entry with a pass phrase, the pass phrase is written as a cookie to your browser to make adding multiple entries easier. The cookie expires when you logout.
+Entries are written paragraph by paragraph with the option of a client side encryption to be performed with a passphrase. Each entry can use a different passphrase (though not advised).
+### passphrase
+Your passphrase (if used) is solely client side and so **at present cannot be changed** as there is no simple way to mix client and server side encryption rewriting without compromising the security of the users data. When making a new entry with a passphrase, the passphrase is written as a cookie to your browser to make adding multiple entries easier. The cookie expires when you logout.
 ### Password 
-Your password forms part of your server-side encryption cipher and so cannot be easily be changed. To do so, your entire journal needs to be re-encrypted. This is done via the [Change password page](https://kinetad.com/changepassword "Kinetad - open source online journal"). Changing your password will not affect your pass phrase.
+Your password forms part of your server-side encryption cipher and so cannot be easily be changed. To do so, your entire journal needs to be re-encrypted. This is done via the [Change password page](https://kinetad.com/changepassword "Kinetad - open source online journal"). Changing your password will not affect your passphrase.
 ### Unlocking
-upon logging in, entries remain in an encrypted state for an additional privacy feature in case one has thier browser save passwords. This is **toggled by clicking on the heading.**
+Upon logging in, entries remain in an encrypted state for an additional privacy feature in case one has their browser save passwords. This is **toggled by clicking on the heading.**
 ### Navigation
 Previous and Next day buttons do as one would expect. `CRTL + f` is a nice way to find things also. Exporting is suggested for more in-depth reviewing.
 ### Export
@@ -60,22 +60,25 @@ If you are a little more interested in running your own instance, you'll need:
 	 `UPDATE`
 4. Update `includes/psl-config.php` to match the SQL login and database information.
 5. Run the following SQL command to create the members table and login failure table:
- > --
--- Table structure for table \`login_attempts\`
+```sql
 --
-CREATE TABLE IF NOT EXISTS \`login_attempts\` (
-  \`user_id\` int(11) NOT NULL,
-  \`time\` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Table structure for table `login_attempts`
 --
--- Table structure for table \`members\`
+CREATE TABLE IF NOT EXISTS `login_attempts` (
+  `user_id` int(11) NOT NULL,
+  `time` varchar(30) NOT NULL
+)
+ENGINE=InnoDB DEFAULT CHARSET=latin1;
 --
-CREATE TABLE IF NOT EXISTS \`members\` (
-  \`id\` int(11) NOT NULL AUTO_INCREMENT,
-  \`username\` varchar(30) NOT NULL,
-  \`password\` char(128) NOT NULL,
-  \`salt\` char(128) NOT NULL,
-  PRIMARY KEY (\`id\`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
+-- Table structure for table `members`
+--
+CREATE TABLE IF NOT EXISTS `members` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(30) NOT NULL,
+  `password` char(128) NOT NULL,
+  `salt` char(128) NOT NULL,
+  PRIMARY KEY (`id`)
+)
+ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+```
 6. Use as outlined above!
