@@ -35,11 +35,19 @@ body {
     -ms-transform: translateX(-50%);
     -o-transform: translateX(-50%);
     transform: translateX(-50%);
-	background-image: url(/graphics/ep_naturalwhite.png);
+	background-image: url(/graphics/ep_naturalwhite.jpg);
     background-position: center center;
     background-repeat: repeat;
     background-size: 400px;
 	z-index: 10;
+}
+.headerLocked {
+	font-size: 80%;
+}
+#imgToUpload {
+	margin-left: 65px;
+	display: block;
+	width: 70%;
 }
 form {
 	height: 50px;
@@ -59,15 +67,18 @@ form {
 	cursor: auto;
 }
 .submitbox {
-	position: relative;
-	left: 50%;
+	display: inline-block;
+	width: 30%;
 	margin-top: 5px;
-    -webkit-transform: translateX(-50%);
-    -moz-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
-    -o-transform: translateX(-50%);
-    transform: translateX(-50%);
     cursor: pointer;
+}
+.remove {
+    text-align: right;
+    position: relative;
+    float: right;
+    width: 20px;
+    margin: 5px;
+    top: -25px;
 }
 .entry {
 	margin-bottom: -30px;
@@ -82,18 +93,21 @@ h3 {
 	margin: 0;
 	font-weight: 100;
 }
-#time {
+.time {
 	position: relative;
 }
-#number {
+.number {
 	position: relative;
 	text-align: right;
 	top: -19px;
 	font-weight: bold;
 	font-size: 0.7em;
-}	
-p	{
-	left: 65px;
+}
+.image {
+	margin-top: 4px;
+}
+p, .image	{
+	left: 70px;
 	position: relative;
 	top: -33px;
 	width: 70%;
@@ -186,4 +200,7 @@ select:focus,
 textarea:focus,
 button:focus {
     outline: none;
+}
+input[type='file'] {
+  color: transparent;
 }
