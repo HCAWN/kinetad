@@ -14,5 +14,5 @@ jobs:
             sudo apt-get install lftp;
       - checkout
       - run:
-          name: Send Via SFTP
-          command: lftp ftp://${username}:${password}@${hostname} -e "set ftp:ssl-allow no; mirror -v -R source ./; quit"
+          name: Mirror Via FTP
+          command: lftp ftp://${username}:${password}@${hostname} -e "set ftp:ssl-allow no; mirror -v -R source .; quit"
