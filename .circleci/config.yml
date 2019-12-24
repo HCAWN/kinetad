@@ -15,4 +15,4 @@ jobs:
       - checkout
       - run:
           name: Send Via SFTP
-          command: lftp ftp://${username}:${password}@${hostname} -e "set ftp:ssl-allow no; mirror -v -R source ./; quit"
+          command: lftp ftp://${username}:${password}@${hostname} -e "set ftp:ssl-allow no; mirror -v -R source/ ./; quit"
