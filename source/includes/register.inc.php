@@ -45,7 +45,8 @@ if (isset($_POST['username'], $_POST['p'])) {
 		CREATE TABLE IF NOT EXISTS `".$username."` (
 		  `number` int(16) NOT NULL AUTO_INCREMENT,
 		  `datee` datetime NOT NULL,
-		  `entry` text NOT NULL,
+		  `entry` text,
+		  `imgBlob` mediumblob,
 		  `IV` varchar(255) NOT NULL,
 		  `tag` varchar(255) NOT NULL,
 		  PRIMARY KEY (`number`)

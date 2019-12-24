@@ -34,7 +34,9 @@ Online journals have great features over normal ones, Kinetad builds on these:
 Visit the [Registration page](https://www.kinetad.com/register "Kinetad - open source online journal"), input a unique username, and a strong password and off you go.
 ### Adding Entries
 Entries are written paragraph by paragraph with the option of a client side encryption to be performed with a passphrase. Each entry can use a different passphrase (though not advised).
-### passphrase
+### Adding Images
+A new addition is to add image entries. This is done by first previewing images that are compressed client side. Uploading the image encrpytes in client and server side in a similar method to text entries. Images are stored as Medium Blobs in the database.
+### Passphrase
 Your passphrase (if used) is solely client side and so **at present cannot be changed** as there is no simple way to mix client and server side encryption rewriting without compromising the security of the users data. When making a new entry with a passphrase, the passphrase is written as a cookie to your browser to make adding multiple entries easier. The cookie expires when you logout.
 ### Password 
 Your password forms part of your server-side encryption cipher and so cannot be easily be changed. To do so, your entire journal needs to be re-encrypted. This is done via the [Change password page](https://kinetad.com/changepassword "Kinetad - open source online journal"). Changing your password will not affect your passphrase.

@@ -56,11 +56,11 @@ sec_session_start();
 		<div id="header">
 			<h1>
 				<form action="" name="lockstatus" method="post">
-					<input style="text-decoration: none;" type="submit" class="button" id="title" name="lockstatus" value="<?php echo ucfirst($_SESSION['username']); ?>'s Journal<?php if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal') { echo ' (Locked)';}; ?>" />
+					<input style="text-decoration: none;" type="submit" class="button <?php if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal') { echo ' headerLocked';}; ?>" id="title" name="lockstatus" value="<?php echo ucfirst($_SESSION['username']); ?>'s Journal<?php if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal') { echo ' (Locked)';}; ?>" />
 				</form>
 			</h1>
 			<div class="previousd topbutton">Previous Day</div>
-			<a class="logout topbutton" href="includes/logout">log out</a>
+			<a class="logout topbutton" href="includes/logout">Log out</a>
 			<div class="nextd topbutton">Next Day</div>
 		</div>
 		<div id=main>
@@ -68,56 +68,81 @@ sec_session_start();
 			<form class="form" action="" method="post" enctype="multipart/form-data" autocomplete="off">
 				<input id="entrycipher" type="text" placeholder="Cipher" name="entrycipher" class="entrybox enterable" required />
 				<textarea id="entryraw" type="text" style="overflow:hidden; height: 20px;" placeholder="Thought" name="entry" class="entrybox enterable" autofocus="autofocus" onkeyup="textAreaAdjust(this)" required /></textarea>
-				<input id="addbutton" type="button" value="Add" name="Done" class="submitbox" onclick="encrypt(this.form, this.form.entry, this.form.entrycipher);" />
-			</form>
+				<input id="addbutton" type="button" value="Add" name="Done" class="submitbox" onclick="textEntry(this.form, this.form.entry, this.form.entrycipher);" />
+					<input id="hiddenAddFile" type="file" accept="image/*" style="display: none;" >
+				<input id="imageUploadButton" type="button" class="submitbox" value="Preview image" onclick="document.getElementById('hiddenAddFile').click()" >
+				<input id="addimagebutton" style="display: none; left: 80%;" type="button" value="Add image" name="Done" class="submitbox" onclick="imageEntry(this.form,document.getElementById('imgToUpload').src,this.form.entrycipher)" />
+				<input id="discardimage" style="display: none; left: 20%;" type="button" value="Discard image" name="Done" class="submitbox" onclick="abort()" />
+			</form>		
+			
 			<h2 class="todaytitle" style="position: relative;">Today</h2>
-			<div class="entries download" style="position: relative;">
-				<?php
-				$current_date = strtotime('today midnight');
-				$FourAM = $current_date + 14400;
-				$word_count = 0;
-				while ($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) : ?>
-					<div class="entry">
-						<?php
-						$entry_date = strtotime($row['datee']);
-						$emptydate = true;
-						while ($emptydate == true) {
-							if ($entry_date < $FourAM) {
-								$FourAM -= 86400;
+			<img id="imgToUpload">
+			<form action="" method="post" >
+				<div class="entries download" style="position: relative;">
+					<?php
+					$current_date = strtotime('today midnight');
+					$FourAM = $current_date + 14400;
+					$word_count = 0;
+					while ($row = mysqli_fetch_array($query, MYSQLI_ASSOC)) : ?>
+						<div class="entry">
+							<?php
+							$entry_date = strtotime($row['datee']);
+							$emptydate = true;
+							while ($emptydate == true) {
 								if ($entry_date < $FourAM) {
-									echo "<h2><a name=\"#a\">".date('Y-m-d', $FourAM)."</a></h2>";
+									$FourAM -= 86400;
+									if ($entry_date < $FourAM) {
+										echo "<h2><a name=\"#a\">".date('Y-m-d', $FourAM)."</a></h2>";
+									}
+									else {
+										echo "<h2><a class=\"col datehead\" name=\"#a\">".date('Y-m-d', $FourAM)."</a></h2>";
+									};
+									
 								}
 								else {
-									echo "<h2><a class=\"col datehead\" name=\"#a\">".date('Y-m-d', $FourAM)."</a></h2>";
+									$emptydate = false;
 								};
-								
-							}
-							else {
-								$emptydate = false;
 							};
-						};
-						?>
-						<h3 class="col" id="time"><?php echo date('H:i:s', $entry_date);?></h3>
-						<h3 class="col" id="number"><?php echo $row['number']; ?></h3>
-							<?php
-							if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
-								$toecho = openssl_decrypt($row['entry'], "aes-256-gcm", $_SESSION['encryptstring'], $options=0, hex2bin($row['IV']), hex2bin($row['tag']));
-							}
-							else {
-								$toecho = $row['entry'];
-							};
-							echo '<p class="encrypted" style="display: none;">'.$toecho.'</p>';
-							$word_count += str_word_count($toecho);
 							?>
-						<?php echo '<p class="col decrypted" >'.$toecho.'</p>'; ?>
-					</div>
-				<?php
-				endwhile
-				?>
-			</div>
+							<h3 class="col time" ><?php echo date('H:i:s', $entry_date);?></h3>
+							<h3 class="col number" ><?php echo $row['number']; ?></h3>
+							<label class="submitbox remove" >
+								<input style="display: none;" type="submit" value="<?php echo $row['number']; ?>" name="delete"/>
+								<span>X</span>
+							</label>
+							<?php
+							if ($row['entry'] != '') {
+								if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
+									$toecho = openssl_decrypt($row['entry'], "aes-256-gcm", $_SESSION['encryptstring'], $options=0, hex2bin($row['IV']), hex2bin($row['tag']));
+								}
+								else {
+									$toecho = $row['entry'];
+								};
+								echo '<p class="encrypted" style="display: none;">'.$toecho.'</p>';
+								$word_count += str_word_count($toecho);
+								echo '<p class="col decrypted sentence" >'.$toecho.'</p>';
+							}
+							else {
+								if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
+									$toecho = openssl_decrypt($row['imgBlob'], "aes-256-gcm", $_SESSION['encryptstring'], $options=0, hex2bin($row['IV']), hex2bin($row['tag']));
+								}
+								else {
+									$toecho = $row['imgBlob'];
+								};	
+								echo '<img class="encrypted" style="display: none;" src="'.$toecho.'" >';
+								echo '<img class="col decrypted image" src="graphics/default.jpg" >';							
+							}
+							?>
+						</div>
+					<?php
+					endwhile
+					?>
+				</div>
+			</form>
 			<h2 class="toptitle" id="wordcount">Total words: <?php echo number_format($word_count); ?></h2>
 		</div>
 		<?php
+		///legacy upload///
 		if (isset($_POST['e'])) {
 			$datee = date('Y-m-d H:i:s');
 			//////////////////AES-256-GCM encryption//////////////////
@@ -137,10 +162,74 @@ sec_session_start();
 			header('Location: https://'.$_SERVER['SERVER_NAME']);
 			exit;
 		};
+		/// delet entry ///
+		if (isset($_POST['delete'])) {
+			$number = $_POST['delete'];
+			$sql = "DELETE FROM ".strtolower($_SESSION['username'])." WHERE number=".$number." ;";
+			if ( ! $query = mysqli_query($mysqli, $sql) ) {
+				echo mysqli_error($mysqli);
+				die;
+			};
+			header('Location: https://'.$_SERVER['SERVER_NAME']);
+			exit;
+		};
+		/// new text upload ///
+		if (isset($_POST['textdata'])) {
+			$datee = date('Y-m-d H:i:s');
+			//////////////////AES-256-GCM encryption//////////////////
+			$plaintext = $_POST['textdata'];
+			$cipher = "aes-256-gcm";
+			$key = $_SESSION['encryptstring'];
+			$tag = '10001';
+			$ivlen = openssl_cipher_iv_length($cipher);
+			$iv = openssl_random_pseudo_bytes($ivlen);
+			$entry = openssl_encrypt($plaintext, $cipher, $key, $options=0, $iv, $tag);
+			//////////////////AES-256-GCM encryption//////////////////
+			$sql = "INSERT INTO ".strtolower($_SESSION['username'])." (datee,entry,IV,tag) VALUES ('".$datee."','".$entry."','".bin2hex($iv)."','".bin2hex($tag)."');" ;
+			if ( ! $query = mysqli_query($mysqli, $sql) ) {
+				echo mysqli_error($mysqli);
+				die;
+			};
+			header('Location: https://'.$_SERVER['SERVER_NAME']);
+			exit;
+		};
+		/// new image upload ///
+		if (isset($_POST['imagedata'])) {
+			$datee = date('Y-m-d H:i:s');
+			//////////////////AES-256-GCM encryption//////////////////
+			$plaintext = $_POST['imagedata'];
+			$cipher = "aes-256-gcm";
+			$key = $_SESSION['encryptstring'];
+			$tag = '10001';
+			$ivlen = openssl_cipher_iv_length($cipher);
+			$iv = openssl_random_pseudo_bytes($ivlen);
+			$imgBlob = openssl_encrypt($plaintext, $cipher, $key, $options=0, $iv, $tag);
+			//////////////////AES-256-GCM encryption//////////////////
+			$sql = "INSERT INTO ".strtolower($_SESSION['username'])." (datee,imgBlob,IV,tag) VALUES ('".$datee."','".$imgBlob."','".bin2hex($iv)."','".bin2hex($tag)."');" ;
+			if ( ! $query = mysqli_query($mysqli, $sql) ) {
+				echo mysqli_error($mysqli);
+				die;
+			};
+			header('Location: https://'.$_SERVER['SERVER_NAME']);
+			exit;
+		};
 		?>
 		<a style="position: fixed; bottom: 0; left: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/changepassword">Change Password</a>
 		<a style="position: fixed; bottom: 0; right: 0; cursor: pointer; color: inherit; text-decoration: none;" href="" download="Kinetad_Export.csv">Export</a>
 		<script type="text/javascript">
+			//PREVIOUS AND NEXT DAYS//
+			var index = -1;
+			$('.previousd').click(function() {
+			   index++;
+			   $(window).scrollTop($('a').eq(index).position().top);
+
+			});
+			$('.nextd').click(function() {
+			   index--;
+			   if(index < 0) { index = 0;}
+
+			   $(window).scrollTop($('a').eq(index).position().top);
+			});
 			//As submit button is no longer a "real" button://
 			$(".enterable").keyup(function enterkeyup(event){
 				if (event.keyCode === 13) {
@@ -150,16 +239,61 @@ sec_session_start();
 			//ON THE FLY DECRYPTION//
 			$("#entrycipher").keyup(function decryptkeyup(){
 				$(".decrypted").each(function(){
-					var savethis = $(this);
-					decrypt($(this).prev().text(),$("#entrycipher").val()).then(function(result) {
-						$(savethis).text(result);
-					});
+					if ($(this).hasClass("sentence")) {
+						var savethis = $(this);
+						decrypt($(this).prev().text(),$("#entrycipher").val()).then(function(result) {
+							$(savethis).text(result);
+						});
+					}
+					if ($(this).hasClass("image")) {
+						var savethis = $(this);
+						decrypt($(this).prev().attr('src'),$("#entrycipher").val()).then(function(result) {
+							$(savethis).attr('src',result) ;
+						});
+					}
+
 				});
 			});
 			//Submit download//
 			$("a[download]").click(function(){
 			    $("div.download").toCSV(this);
 			});
+			//Compress and preview image//
+			document.getElementById("hiddenAddFile").addEventListener("change", function (event) {
+				compress(event);
+			});
+			function compress(e){
+			    const width = 350;
+			    const fileName = e.target.files[0].name;
+			    const reader = new FileReader();
+			    reader.readAsDataURL(e.target.files[0]);
+			    reader.onload = event => {
+			        const img = new Image();
+			        img.src = event.target.result;
+			        img.onload = () => {
+			                const elem = document.createElement('canvas');
+			                const height = img.height * width / img.width 
+			                elem.width = width;
+			                elem.height = height;
+			                const ctx = elem.getContext('2d');
+			                ctx.drawImage(img, 0, 0, width, height);
+			                const data = ctx.canvas.toDataURL('image/jpeg', 0.8);
+			                console.log(data)
+			                document.getElementById("imgToUpload").src = data;
+			                $('#addbutton').hide()
+			                $('#addimagebutton').show()
+			                $('#discardimage').show()              
+			            },
+			            reader.onerror = error => console.log(error);
+			    };
+			}
+			//Abort image upload//
+			function abort(){
+				document.getElementById("imgToUpload").src = "";
+				$('#addbutton').show()
+				$('#addimagebutton').hide()
+				$('#discardimage').hide()  				
+			}
 			//Change text area size//
 			function textAreaAdjust(o) {
 				o.style.height = "1px";
@@ -175,69 +309,53 @@ sec_session_start();
 			  var csvData = [];
 			  var tmpArr = [];
 			  var tmpStr = '';
+			  var currentdate = "Today";
 			  data.find(".entry").each(function() {
 					tmpArr = [];
-						$(this).find(".col").each(function() {
-							if($(this).hasClass("datehead")) {
-								currentdate = $(this).text();
-								colnum = 0;
-							}
-							if(colnum == 4) {
-								tmpStr = currentdate.replace(/"/g, '""');
-								tmpArr.push('"' + tmpStr + '"');
-								colnum = 1;
-							}
-							if($(this).text().match(/^-{0,1}\d*\.{0,1}\d+$/)) {
-								tmpArr.push(parseFloat($(this).text()));
-								colnum++;
-							}
-							else {
-								tmpStr = $(this).text().replace(/"/g, '""');
-								tmpArr.push('"' + tmpStr + '"');
-								colnum++;
-							}
-						});
+					var dateNotUsed = true;
+					$(this).find(".col").each(function() {
+						// if entry has new date
+						if($(this).hasClass("datehead")) {
+							currentdate = $(this).text();
+						}
+						// if col is date
+						if(dateNotUsed) {
+							tmpStr = currentdate.replace(/"/g, '""');
+							tmpArr.push('"' + tmpStr + '"');
+							dateNotUsed = false;
+						}
+						// if col is number
+						if($(this).text().match(/^-{0,1}\d*\.{0,1}\d+$/)) {
+							tmpArr.push(parseFloat($(this).text()));
+						}
+						// if col is sentence
+						if($(this).hasClass("sentence")) {
+							tmpStr = $(this).text().replace(/"/g, '""');
+							console.log(tmpStr);
+							tmpArr.push('"' + tmpStr + '"');
+						}
+						// if col is image
+						if($(this).hasClass("image")) {
+							tmpArr.push('"Image file not exported"');
+						}
+						// if col is time
+						if($(this).hasClass("time")) {
+							tmpStr = $(this).text().replace(/"/g, '""');
+							tmpArr.push('"' + tmpStr + '"');
+						}
+					});
 					csvData.push(tmpArr.join(','));
 			  });
 			  var output = csvData.join('\n');
 			  var uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(output);
 			  $link.attr("href", uri);
-			  console.log(uri);
 			}
 			if (readCookie('cipher')) {
 				$("#entrycipher").val(readCookie('cipher'));
 				$('#entrycipher').keyup();
 			};
-			//PREVIOUS AND NEXT DAYS//
-			var index = -1;
-			$('.previousd').click(function() {
-			   index++;
-			   $(window).scrollTop($('a').eq(index).position().top);
-
-			});
-			$('.nextd').click(function() {
-			   index--;
-			   if(index < 0) { index = 0;}
-
-			   $(window).scrollTop($('a').eq(index).position().top);
-			});
 		</script>
 		<?php
-		if ($_SESSION['lockstatus'] == ucfirst($_SESSION['username']).'\'s Journal (Locked)') {
-		?>
-<!-- 		<script type="text/javascript">
-			//Function to switch to secure mode after 30 seconds of inactive mouse movment
-			var timeout = null;
-			$(document).on('mousemove', function() {
-				clearTimeout(timeout);
-				timeout = setTimeout(function() {
-					$("#entrycipher").val("");
-					$('#entrycipher').keyup();
-				}, 30000);
-			});
-		</script> -->
-		<?php
-		};
 		else :
 			// display login portal
 		?>
