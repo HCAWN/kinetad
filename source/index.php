@@ -60,7 +60,7 @@ sec_session_start();
 				</form>
 			</h1>
 			<div class="previousd topbutton">Previous Day</div>
-			<a class="logout topbutton" href="includes/logout">log out</a>
+			<a class="logout topbutton" href="includes/logout">Log out</a>
 			<div class="nextd topbutton">Next Day</div>
 		</div>
 		<div id=main>
