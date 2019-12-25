@@ -45,8 +45,19 @@ sec_session_start();
 			header('Location: '.$_SERVER['REQUEST_URI']);
 			exit;
 		};
+		//Pagination
+		$defaultPag = 30;
+		$defaultPagMax = 2000;
+		if (isset($_GET['limit'])) {
+			$limit = filter_input(INPUT_GET, 'limit', FILTER_SANITIZE_NUMBER_FLOAT);
+			if (!$limit) {
+				$limit = $defaultPag;
+			};
+		} else {
+			$limit = $defaultPag;
+		};
 		//Import Journal entries
-		$sql = "SELECT * FROM ".strtolower($_SESSION['username'])." ORDER BY number DESC" ; 
+		$sql = "SELECT * FROM ".strtolower($_SESSION['username'])." ORDER BY number DESC LIMIT ".$limit ; 
 		$query = mysqli_query($mysqli, $sql);
 		if (!$query) {
 			die ('SQL Error: ' . mysqli_error($mysqli));
@@ -217,6 +228,14 @@ sec_session_start();
 		<a style="position: fixed; bottom: 0; left: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/changepassword">Change Password</a>
 		<a style="position: fixed; bottom: 0; right: 0; cursor: pointer; color: inherit; text-decoration: none;" href="" download="Kinetad_Export.csv">Export</a>
 		<script type="text/javascript">
+			//BOTTOM OF PAGE PAGINATION
+			$(window).scroll(function() {
+			if($(window).scrollTop() + $(window).height() == $(document).height()) {
+				if(!window.location.search.substr(1)) {
+					window.location = "<?php echo $_SERVER['REQUEST_URI']."?limit=".$defaultPagMax ?>";
+				}
+			}
+			});
 			//PREVIOUS AND NEXT DAYS//
 			var index = -1;
 			$('.previousd').click(function() {
