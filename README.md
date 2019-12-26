@@ -1,6 +1,7 @@
 # Kinetad Online Encrypted Journal
 ## About
 This is an expansion of a personal project to create an encrypted online journal. Allowing me to access it from anywhere and it remain secure.
+![Kinetad mobile preview](preview.jpg)
 * Kinetad.com/register is the code in action, to use as a trial.
 * The journal uses double AES-256-GCM encryption - 
 	* Client side - with a passphrase that exists client-side that never passes to the server.

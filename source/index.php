@@ -237,7 +237,7 @@ sec_session_start();
 			$(window).scroll(function() {
 				if($(window).scrollTop() + $(window).height() == $(document).height()) {
 					console.log('hit bottom');
-					window.location = "<?php echo parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)."?limit=".($limit+$defaultPag)."&height=" ?>"+($(window).scrollTop());
+					window.location = "<?php echo parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)."?limit=".($limit+$defaultPag)."&height=" ?>"+($(window).scrollTop()-1);
 				};
 			});
 			//PREVIOUS AND NEXT DAYS//
@@ -418,6 +418,7 @@ sec_session_start();
 				<input type="password" placeholder="Password" name="password" id="password" class="textinp"/>
 				<input type="button" value="Login" id="submt" class="buttonclk" onclick="formhash(this.form, this.form.password);" /> 
 			</form>
+			<a style="position: fixed; bottom: 0; left: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/register">Register</a>
 			<script type="text/javascript">
 				//As submit button is no longer a "real" button://
 				$(document).keyup(function enterkeyup(event){

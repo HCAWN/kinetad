@@ -30,7 +30,7 @@ include_once 'includes/functions.php';
 			echo $error_msg;
 		}
 		?>
-		<img id="pixabay" src="graphics/background.jpg">
+		<div id="pixabay"></div>
 		<form method="post" name="registration_form" autocomplete="off" action="">
 			<h2 style="text-align: center;" >Create an account</h2>
 			<input type='text' placeholder='Username' name='username' id='username' class="textinp" />
@@ -38,5 +38,6 @@ include_once 'includes/functions.php';
 			<input type="password" placeholder="Confirm password" name="confirmpwd" id="confirmpwd" class="textinp" />
 			<input type="button" value="Register" class="buttonclk" onclick="return regformhash(this.form, this.form.username, this.form.password, this.form.confirmpwd);" /> 
 		</form>
+		<a style="position: fixed; bottom: 0; left: 0; cursor: pointer; color: inherit; text-decoration: none;" href="/">Home</a>
 	</body>
 </html>
