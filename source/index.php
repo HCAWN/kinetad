@@ -46,10 +46,10 @@ sec_session_start();
 			exit;
 		};
 		//Pagination
-		$defaultPag = 30;
+		$defaultPag = 5;
 		$defaultPagMax = 2000;
 		if (isset($_GET['limit'])) {
-			$limit = filter_input(INPUT_GET, 'limit', FILTER_SANITIZE_NUMBER_FLOAT);
+			$limit = min(filter_input(INPUT_GET, 'limit', FILTER_SANITIZE_NUMBER_FLOAT),$defaultPagMax);
 			if (!$limit) {
 				$limit = $defaultPag;
 			};
@@ -229,12 +229,16 @@ sec_session_start();
 		<a style="position: fixed; bottom: 0; right: 0; cursor: pointer; color: inherit; text-decoration: none;" href="" download="Kinetad_Export.csv">Export</a>
 		<script type="text/javascript">
 			//BOTTOM OF PAGE PAGINATION
+			$(window).on('load', function() {
+				var url = new URL(window.location.href);
+				var height = url.searchParams.get("height");
+				$(window).scrollTop(height);
+			});
 			$(window).scroll(function() {
-			if($(window).scrollTop() + $(window).height() == $(document).height()) {
-				if(!window.location.search.substr(1)) {
-					window.location = "<?php echo $_SERVER['REQUEST_URI']."?limit=".$defaultPagMax ?>";
-				}
-			}
+				if($(window).scrollTop() + $(window).height() == $(document).height()) {
+					console.log('hit bottom');
+					window.location = "<?php echo parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)."?limit=".($limit+$defaultPag)."&height=" ?>"+($(window).scrollTop());
+				};
 			});
 			//PREVIOUS AND NEXT DAYS//
 			var index = -1;
