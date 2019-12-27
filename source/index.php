@@ -46,7 +46,7 @@ sec_session_start();
 			exit;
 		};
 		//Pagination
-		$defaultPag = 5;
+		$defaultPag = 30;
 		$defaultPagMax = 2000;
 		if (isset($_GET['limit'])) {
 			$limit = min(filter_input(INPUT_GET, 'limit', FILTER_SANITIZE_NUMBER_FLOAT),$defaultPagMax);
