@@ -1,11 +1,16 @@
 # Kinetad Online Encrypted Journal
+![Kinetad mobile preview](preview.jpg)
+## Contents:
+1. About
+1. Usage
+1. Running your own instance
+1. Why Journal?
 ## About
 This is an expansion of a personal project to create an encrypted online journal. Allowing me to access it from anywhere and it remain secure.
-![Kinetad mobile preview](preview.jpg)
-* Kinetad.com/register is the code in action, to use as a trial.
+* Kinetad.com is the code in action, ready to use.
 * The journal uses double AES-256-GCM encryption - 
-	* Client side - with a passphrase that exists client-side that never passes to the server.
-    * Server side - with the cipher being the users password run through a SHA-512 hash.
+  * Client side - with a passphrase that exists client-side that never passes to the server.
+  * Server side - with the cipher being the user's password run through a SHA-512 hash.
 * The journal features time stamping and dating for beautiful logging.
 ## Encryption and Security Details
 The aim of the project as it currently stands, is to allow enough encryption that only the user can access the contents of the journal.
@@ -36,7 +41,7 @@ Visit the [Registration page](https://www.kinetad.com/register "Kinetad - open s
 ### Adding Entries
 Entries are written paragraph by paragraph with the option of a client side encryption to be performed with a passphrase. Each entry can use a different passphrase (though not advised).
 ### Adding Images
-A new addition is to add image entries. This is done by first previewing images that are compressed client side. Uploading the image encrpytes in client and server side in a similar method to text entries. Images are stored as Medium Blobs in the database.
+A new addition is to add image entries. This is done by first previewing images that are compressed client side. Uploading the image encrpyts in client and server side in a similar method to text entries. Images are stored as Medium Blobs in the database.
 ### Passphrase
 Your passphrase (if used) is solely client side and so **at present cannot be changed** as there is no simple way to mix client and server side encryption rewriting without compromising the security of the users data. When making a new entry with a passphrase, the passphrase is written as a cookie to your browser to make adding multiple entries easier. The cookie expires when you logout.
 ### Password 
@@ -85,3 +90,14 @@ CREATE TABLE IF NOT EXISTS `members` (
 ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 ```
 6. Use as outlined above!
+## Why Journal?
+One may wonder why keep a journal if it is not in a more creative medium, such as on paper with coloured pens- the ability to draw- or stick things in, etc?
+
+In my view, the benefits of having even a purely written journal are as follows:
+
+### Clearing ones head:
+Having an opportunity to collect your thoughts in a coherent manner can be very useful in providing clarity on them. What’s more, a reliable response (i.e. no response) gives consistency in how you express yourself. You're writing for _your_ benefit, not for a friend, family member or partner's. Your words aren't skewed to appease or diluted in subconscious fear of lapse of trust after confiding in another.
+### Post-mortem:
+Your perception of past events is skewed by the person you are today. The ability to introspect over your past and understand decisions you made as the person you were, not the person you are, is a great way to facilitate future good decisions and limit the poor ones.
+### Posterity:
+Once you've been journaling for a while, there's nothing quite like reading through your past. If you're falling in love, building an empire, starting a family or experiencing new things, the journey you take isn't just those highs on social media, or the lows you try to forget, it's every step you took along the way.
